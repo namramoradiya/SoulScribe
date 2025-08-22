@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoulScribe - Journal History</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #f7f9fe;
+      font-family: 'Inter', sans-serif;
+      color: #222;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-weight: 700;
+      font-size: 28px;
+      color: #2b2b2b;
+    }
+    .header p {
+      font-size: 15px;
+      color: #555;
+    }
+    .date {
+      text-align: left;
+      font-size: 14px;
+      color: #5a5a5a;
+      margin-bottom: 10px;
+    }
+
+    /* Navbar */
+    .nav-tabs {
+      border: none;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    .nav-tabs .nav-link {
+      border: none;
+      color: #444;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+    }
+    .nav-tabs .nav-link.active {
+      background: #f0edff;
+      color: #6b4ce6;
+      font-weight: 600;
+    }
+
+    /* Entry Card */
+    .entry-card {
+      border: none;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .entry-mood {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .entry-actions button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 8px;
+    }
+    .entry-actions .delete {
+      color: #e63946;
+    }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      margin: 2px;
+      font-size: 12px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .positive { background: #d1fae5; color: #065f46; }
+    .neutral { background: #e0e7ff; color: #3730a3; }
+    .negative { background: #fee2e2; color: #991b1b; }
+    .happy { background: #fef9c3; color: #854d0e; }
+    .sad { background: #dbeafe; color: #1e40af; }
+    .angry { background: #ffe4e6; color: #9f1239; }
+    .blissful { background: #d1fae5; color: #065f46; }
+    .good { background: #fef9c3; color: #854d0e; }
+    .very-low { background: #fee2e2; color: #991b1b; }
+
+    /* AI Summary */
+    .ai-summary {
+      margin-top: 12px;
+      background: #eef0fb;
+      border-left: 4px solid #b3a4f4;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    /* Loading and States */
+    .loading-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    .empty-state h5 {
+      margin-bottom: 15px;
+      color: #444;
+    }
+    .error-state {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    /* Modal */
+    .modal-body {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-4">
+
+  <!-- Date -->
+  <div class="date" id="current-date">📅 Friday, August 22, 2025</div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🧠 SoulScribe</h1>
+    <p>Your personal AI-powered mental health companion. Express your thoughts, 
+       understand your emotions, and track your journey to well-being.</p>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ul class="nav nav-tabs justify-content-center mb-4">
+    <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Voice</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Insights</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Mindfulness</a></li>
+    <li class="nav-item"><a class="nav-link active" href="/history">History</a></li>
+  </ul>
+
+  <!-- Loading State -->
+  <div id="loading-state" class="loading-state">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3">Loading your journal entries...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div id="empty-state" class="empty-state" style="display: none;">
+    <h5>📝 No journal entries yet</h5>
+    <p>Start writing to see your history here!</p>
+    <a href="/index" class="btn btn-primary">Write Your First Entry</a>
+  </div>
+
+  <!-- Error State -->
+  <div id="error-state" class="error-state" style="display: none;">
+    <div class="alert alert-danger">
+      <h6>❌ Error loading history</h6>
+      <p id="error-message">Something went wrong. Please try again later.</p>
+      <button class="btn btn-outline-danger btn-sm" onclick="loadHistory()">Retry</button>
+    </div>
+  </div>
+
+  <!-- Dynamic Content Container -->
+  <div id="content-container" style="display: none;">
+    <!-- History Title -->
+    <h4 class="mb-4" id="history-title">📖 Journal History</h4>
+    
+    <!-- History Entries Container -->
+    <div id="history-entries"></div>
+  </div>
+
+</div>
+
+<!-- View Entry Modal -->
+<div class="modal fade" id="viewEntryModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📖 Full Journal Entry</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-date" class="text-muted mb-2"></div>
+        <div id="modal-mood" class="mb-3"></div>
+        <h6>Your Entry:</h6>
+        <p id="modal-entry" class="mb-3" style="white-space: pre-wrap;"></p>
+        <h6>AI Response:</h6>
+        <div id="modal-ai-response" class="ai-summary"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let entriesData = []; // Store full entries data
+
+  // Set current date
+  function setCurrentDate() {
+    const now = new Date();
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    document.getElementById('current-date').textContent = '📅 ' + now.toLocaleDateString('en-US', options);
+  }
+
+  // Get mood emoji and score based on mood label
+  function getMoodDisplay(mood) {
+    if (!mood) return { emoji: '😐', score: '5/10' };
+    
+    const moodLower = mood.toLowerCase();
+    switch(moodLower) {
+      case 'blissful':
+        return { emoji: '😍', score: '9-10/10' };
+      case 'good':
+        return { emoji: '😊', score: '7-8/10' };
+      case 'neutral':
+        return { emoji: '😐', score: '5-6/10' };
+      case 'very low':
+        return { emoji: '😢', score: '1-4/10' };
+      default:
+        return { emoji: '😐', score: '5/10' };
+    }
+  }
+
+  // Get mood tag class
+  function getMoodTagClass(mood) {
+    if (!mood) return 'neutral';
+    
+    const moodLower = mood.toLowerCase().replace(' ', '-');
+    switch(moodLower) {
+      case 'blissful': return 'blissful';
+      case 'good': return 'good';
+      case 'neutral': return 'neutral';
+      case 'very-low': return 'very-low';
+      default: return 'neutral';
+    }
+  }
+
+  // Format database date to display format
+  function formatDateForDisplay(dateString) {
+    try {
+      // Handle different possible date formats from SQLite
+      let date;
+      if (dateString.includes('T')) {
+        // ISO format: 2025-08-07T21:04:30
+        date = new Date(dateString);
+      } else if (dateString.includes('-') && dateString.includes(':')) {
+        // SQLite format: 2025-08-07 21:04:30
+        date = new Date(dateString.replace(' ', 'T'));
+      } else {
+        date = new Date(dateString);
+      }
+
+      // Format: "August 7, 2025 at 09:04 PM"
+      const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+      const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+      
+      return date.toLocaleDateString('en-US', dateOptions) + ' at ' + 
+             date.toLocaleTimeString('en-US', timeOptions);
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return dateString; // Return original if formatting fails
+    }
+  }
+
+  // Truncate text for preview
+  function truncateText(text, maxLength = 150) {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
+  // Load history from API
+  async function loadHistory() {
+    try {
+      // Show loading state
+      showState('loading');
+
+      const response = await fetch('/api/history', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Please log in to view your history');
+        }
+        throw new Error(`Failed to load history (${response.status})`);
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.entries && data.entries.length > 0) {
+        entriesData = data.entries; // Store for modal use
+        displayEntries(data.entries);
+        document.getElementById('history-title').textContent = `📖 Journal History (${data.entries.length} entries)`;
+        showState('content');
+      } else {
+        showState('empty');
+      }
+
+    } catch (error) {
+      console.error('Error loading history:', error);
+      document.getElementById('error-message').textContent = error.message;
+      showState('error');
+    }
+  }
+
+  // Show different states
+  function showState(state) {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'none';
+    document.getElementById('content-container').style.display = 'none';
+
+    switch(state) {
+      case 'loading':
+        document.getElementById('loading-state').style.display = 'block';
+        break;
+      case 'empty':
+        document.getElementById('empty-state').style.display = 'block';
+        break;
+      case 'error':
+        document.getElementById('error-state').style.display = 'block';
+        break;
+      case 'content':
+        document.getElementById('content-container').style.display = 'block';
+        break;
+    }
+  }
+
+  // Display entries dynamically
+  function displayEntries(entries) {
+    const container = document.getElementById('history-entries');
+    let entriesHTML = '';
+
+    entries.forEach((entry) => {
+      const moodDisplay = getMoodDisplay(entry.mood);
+      const formattedDate = formatDateForDisplay(entry.created_at);
+      const truncatedEntry = truncateText(entry.entry, 120);
+      const moodTagClass = getMoodTagClass(entry.mood);
+
+      entriesHTML += `
+        <div class="entry-card">
+          <div class="entry-header">
+            <span>${formattedDate}</span>
+            <span class="entry-mood">${moodDisplay.emoji} Mood: ${moodDisplay.score}</span>
+            <div class="entry-actions">
+              <button title="View" onclick="viewEntry(${entry.id})">👁️</button>
+            </div>
+          </div>
+          <p>${truncatedEntry}</p>
+          <div>
+            <span class="tag ${moodTagClass}">${entry.mood || 'neutral'}</span>
+          </div>
+          <div class="ai-summary">
+            🤖 AI Summary <br>
+            ${truncateText(entry.ai_response, 200)}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = entriesHTML;
+  }
+
+  // View full entry in modal
+  function viewEntry(entryId) {
+    const entry = entriesData.find(e => e.id === entryId);
+    if (!entry) {
+      alert('Entry not found');
+      return;
+    }
+
+    // Populate modal with full entry data
+    const moodDisplay = getMoodDisplay(entry.mood);
+    const formattedDate = formatDateForDisplay(entry.created_at);
+    const moodTagClass = getMoodTagClass(entry.mood);
+
+    document.getElementById('modal-date').textContent = formattedDate;
+    document.getElementById('modal-mood').innerHTML = `
+      <span class="entry-mood">${moodDisplay.emoji} Mood: ${moodDisplay.score}</span>
+      <span class="tag ${moodTagClass} ms-2">${entry.mood || 'neutral'}</span>
+    `;
+    document.getElementById('modal-entry').textContent = entry.entry;
+    document.getElementById('modal-ai-response').innerHTML = `
+      🤖 AI Response <br>
+      ${entry.ai_response}
+    `;
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('viewEntryModal'));
+    modal.show();
+  }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', function() {
+    setCurrentDate();
+    loadHistory();
+  });
+</script>
+
+</body>
+</html>

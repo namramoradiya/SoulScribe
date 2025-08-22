@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - SoulScribe</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to right, #eef2ff, #f9faff);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+            width: 350px;
+            text-align: center;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 15px;
+            font-weight: 700;
+        }
+
+        p {
+            color: #6b7280;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: #374151;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: #6366f1;
+            box-shadow: 0px 0px 0px 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #4f46e5;
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-google:hover {
+            background-color: #f3f4f6;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            margin-top: 20px;
+            color: #6b7280;
+        }
+
+        .footer-text a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">
+            <img src="https://img.icons8.com/ios-filled/50/6366f1/brain.png" alt="SoulScribe Logo">
+        </div>
+        <h2>Create Account</h2>
+        <p>Join SoulScribe today</p>
+
+        <form method="POST" action="/register">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" name="username" class="input-field" placeholder="Enter your username" required>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" class="input-field" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" class="input-field" placeholder="Enter your password" required>
+            </div>
+
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password" class="input-field" placeholder="Confirm your password" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+
+            <button type="button" class="btn-google">
+                <img src="https://img.icons8.com/color/16/google-logo.png" alt="Google Logo"> Continue with Google
+            </button>
+        </form>
+
+        <div class="footer-text">
+            Already have an account? <a href="/login">Sign In</a>
+        </div>
+    </div>
+
+</body>
+</html>
