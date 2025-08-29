@@ -227,6 +227,11 @@ def history():
     return render_template('history.html')
 
 
+@app.route('/calender')
+def calender():
+    return render_template('calender.html')
+
+
 @app.route('/api/history', methods=['GET'])
 def get_history():
     if "user_id" not in session:
