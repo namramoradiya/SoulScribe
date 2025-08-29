@@ -208,5 +208,49 @@
   </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadMoodCalendar();
+});
+
+async function loadMoodCalendar(year = new Date().getFullYear(), month = new Date().getMonth() + 1) {
+    try {
+        const response = await fetch(`/api/mood-calendar/${year}/${month}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Calendar data loaded:', data);
+            updateCalendarWithMoods(data.data);
+        } else {
+            console.error('API Error:', data.error);
+        }
+    } catch (error) {
+        console.error('Network Error:', error);
+    }
+}
+
+function updateCalendarWithMoods(moodData) {
+    // Clear existing emojis first
+    const dayElements = document.querySelectorAll('.day:not(.weekday)');
+    
+    dayElements.forEach(dayEl => {
+        const dayText = dayEl.textContent.trim();
+        const day = parseInt(dayText);
+        
+        if (!isNaN(day)) {
+            // Reset to just the day number
+            dayEl.innerHTML = day;
+            dayEl.classList.remove('emoji');
+            
+            // Add mood emoji if exists for this day
+            if (moodData[day]) {
+                dayEl.classList.add('emoji');
+                dayEl.innerHTML = `${day}<br>${moodData[day]}`;
+            }
+        }
+    });
+}
+</script>
 </body>
 </html>
+
