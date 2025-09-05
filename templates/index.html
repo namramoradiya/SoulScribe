@@ -323,11 +323,34 @@ if (data.response) {
 </script> -->
 
 <script>
+
+function getCurrentDate()
+{
+  const today=new Date();
+  const options={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+
+  return today.toLocaleDateString('en-US',options);
+} 
+
+function updateDateContinously()
+{
+  const dateElem=document.querySelector('.date');
+  if(dateElem)
+  {
+    dateElem.textContent=`📅 ${getCurrentDate()}`;
+  }
+  // Update every minute
+  //setTimeout(updateDateContinously,60000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const journalText = document.getElementById("journalText");
   const charCount = document.getElementById("charCount");
   const aiResponse = document.getElementById("aiResponse");
   const form = document.getElementById("journalForm");
+
+  const dateElem = document.querySelector(".date");
+  if (dateElem) dateElem.textContent = `📅 ${getCurrentDate()}`;
 
   // Mood UI
   const moodLabel = document.querySelector(".mood-label");
