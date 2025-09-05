@@ -158,33 +158,65 @@ def journal_api():
 #         return jsonify({"error": str(e)}), 500
     
 
+# @app.route("/api/analyze_mood", methods=["POST"])
+# def analyze_mood():
+#     data = request.get_json()
+#     entry = data.get("entry", "")
+
+#     if not entry.strip():
+#         return jsonify({"error": "Empty journal entry"}), 400
+
+#     scores = analyzer.polarity_scores(entry)
+#     compound = scores['compound']  
+
+#     mood_score = int((compound + 1) * 50)
+
+#     if mood_score < 30:
+#         mood_label = "Very Low"
+#     elif 30 <= mood_score < 60:
+#         mood_label = "Neutral"
+#     elif 60 <= mood_score < 80:
+#         mood_label = "Good"
+#     else:
+#         mood_label = "Blissful"
+
+#     return jsonify({
+#         "mood_score": mood_score,
+#         "mood_label": mood_label,
+#         "raw_scores": scores  # optional debug
+#     })
+
+
 @app.route("/api/analyze_mood", methods=["POST"])
 def analyze_mood():
     data = request.get_json()
     entry = data.get("entry", "")
-
     if not entry.strip():
         return jsonify({"error": "Empty journal entry"}), 400
-
+    
     scores = analyzer.polarity_scores(entry)
     compound = scores['compound']  
-
     mood_score = int((compound + 1) * 50)
-
-    if mood_score < 30:
+    
+    # Enhanced mood categorization with 5 levels
+    if mood_score < 20:
         mood_label = "Very Low"
-    elif 30 <= mood_score < 60:
+    elif 20 <= mood_score < 40:
+        mood_label = "Low"
+    elif 40 <= mood_score < 60:
         mood_label = "Neutral"
     elif 60 <= mood_score < 80:
         mood_label = "Good"
-    else:
+    else:  # 80 <= mood_score <= 100
         mood_label = "Blissful"
-
+    
     return jsonify({
         "mood_score": mood_score,
         "mood_label": mood_label,
         "raw_scores": scores  # optional debug
     })
+
+
 
 @app.route("/api/save_entry", methods=["POST"])
 def save_entry():
