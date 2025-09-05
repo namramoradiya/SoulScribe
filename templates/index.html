@@ -175,7 +175,7 @@
 
       <!-- Mood Slider -->
       <!-- Mood Slider -->
-<div class="mb-3">
+<!-- <div class="mb-3">
   <label class="mood-label fw-bold fs-6" id="moodLabel">❤️ Overall Mood Level: Neutral</label>
   <input type="range" min="0" max="100" value="50" class="form-range" id="moodSlider" disabled>
   <div class="slider-labels d-flex justify-content-between text-muted small mt-1">
@@ -183,8 +183,18 @@
     <span id="mood-neutral">Neutral</span>
     <span id="mood-high">Blissful</span>
   </div>
+</div> -->
+<div class="mb-3">
+  <label class="mood-label fw-bold fs-6" id="moodLabel">❤️ Overall Mood Level: Neutral</label>
+  <input type="range" min="0" max="100" value="50" class="form-range" id="moodSlider" disabled>
+  <div class="slider-labels d-flex justify-content-between text-muted small mt-1">
+    <span id="mood-very-low">Very Low</span>
+    <span id="mood-low">Low</span>
+    <span id="mood-neutral">Neutral</span>
+    <span id="mood-good">Good</span>
+    <span id="mood-blissful">Blissful</span>
+  </div>
 </div>
-
 
 
       <!-- Save Button -->
@@ -313,11 +323,34 @@ if (data.response) {
 </script> -->
 
 <script>
+
+function getCurrentDate()
+{
+  const today=new Date();
+  const options={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+
+  return today.toLocaleDateString('en-US',options);
+} 
+
+function updateDateContinously()
+{
+  const dateElem=document.querySelector('.date');
+  if(dateElem)
+  {
+    dateElem.textContent=`📅 ${getCurrentDate()}`;
+  }
+  // Update every minute
+  //setTimeout(updateDateContinously,60000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const journalText = document.getElementById("journalText");
   const charCount = document.getElementById("charCount");
   const aiResponse = document.getElementById("aiResponse");
   const form = document.getElementById("journalForm");
+
+  const dateElem = document.querySelector(".date");
+  if (dateElem) dateElem.textContent = `📅 ${getCurrentDate()}`;
 
   // Mood UI
   const moodLabel = document.querySelector(".mood-label");
@@ -327,25 +360,71 @@ document.addEventListener("DOMContentLoaded", () => {
   const moodHigh = document.getElementById("mood-high");
 
   // helper: highlight label + color the header label
+  // function applyMoodUI(score, label) {
+  //   moodSlider.value = score;
+  //   moodLabel.textContent = `❤️ Overall Mood Level: ${label}`;
+
+  //   [moodLow, moodNeutral, moodHigh].forEach(el => el.classList.remove("active"));
+  //   if (score < 40) {
+  //     moodLow.classList.add("active");
+  //     moodLabel.style.color = "#e63946";   // red
+  //   } else if (score < 70) {
+  //     moodNeutral.classList.add("active");
+  //     moodLabel.style.color = "#ffb703";   // yellow
+  //   } else {
+  //     moodHigh.classList.add("active");
+  //     moodLabel.style.color = "#2a9d8f";   // green
+  //   }
+
+  //   // optional: fill the track visually
+  //   moodSlider.style.setProperty("--value", score);
+  // }
+
   function applyMoodUI(score, label) {
-    moodSlider.value = score;
-    moodLabel.textContent = `❤️ Overall Mood Level: ${label}`;
-
-    [moodLow, moodNeutral, moodHigh].forEach(el => el.classList.remove("active"));
-    if (score < 40) {
-      moodLow.classList.add("active");
-      moodLabel.style.color = "#e63946";   // red
-    } else if (score < 70) {
-      moodNeutral.classList.add("active");
-      moodLabel.style.color = "#ffb703";   // yellow
-    } else {
-      moodHigh.classList.add("active");
-      moodLabel.style.color = "#2a9d8f";   // green
+    // Get elements by ID
+    const moodSlider = document.getElementById("moodSlider");
+    const moodLabel = document.getElementById("moodLabel");
+    const moodVeryLow = document.getElementById("mood-very-low");
+    const moodLow = document.getElementById("mood-low");
+    const moodNeutral = document.getElementById("mood-neutral");
+    const moodGood = document.getElementById("mood-good");
+    const moodBlissful = document.getElementById("mood-blissful");
+    
+    // Update slider and label
+    if (moodSlider) moodSlider.value = score;
+    if (moodLabel) moodLabel.textContent = `❤️ Overall Mood Level: ${label}`;
+    
+    // Remove active class from all mood spans
+    [moodVeryLow, moodLow, moodNeutral, moodGood, moodBlissful].forEach(el => {
+        if (el) el.classList.remove("active");
+    });
+    
+    // Add active class and color based on score ranges
+    if (score < 20 && moodVeryLow) {
+        // Very Low (0-19)
+        moodVeryLow.classList.add("active");
+        if (moodLabel) moodLabel.style.color = "#dc3545";   // Bootstrap danger red
+    } else if (score < 40 && moodLow) {
+        // Low (20-39)
+        moodLow.classList.add("active");
+        if (moodLabel) moodLabel.style.color = "#fd7e14";   // Bootstrap warning orange
+    } else if (score < 60 && moodNeutral) {
+        // Neutral (40-59)
+        moodNeutral.classList.add("active");
+        if (moodLabel) moodLabel.style.color = "#6c757d";   // Bootstrap secondary gray
+    } else if (score < 80 && moodGood) {
+        // Good (60-79)
+        moodGood.classList.add("active");
+        if (moodLabel) moodLabel.style.color = "#198754";   // Bootstrap success green
+    } else if (moodBlissful) {
+        // Blissful (80-100)
+        moodBlissful.classList.add("active");
+        if (moodLabel) moodLabel.style.color = "#0d6efd";   // Bootstrap primary blue
     }
-
-    // optional: fill the track visually
-    moodSlider.style.setProperty("--value", score);
-  }
+    
+    // Optional: fill the track visually
+    if (moodSlider) moodSlider.style.setProperty("--value", score);
+}
 
   journalText.addEventListener("input", () => {
     charCount.textContent = `${journalText.value.length} characters`;
