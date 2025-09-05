@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,19 +141,21 @@
 </head>
 <body>
 
-<div class="container py-4">
+<div class="container py-4"> -->
 
   <!-- Date -->
-  <div class="date">📅 Friday, August 29, 2025</div>
+   <!--
+  <div class="date">📅 Friday, August 29, 2025</div>-->
 
   <!-- Header -->
+   <!--
   <div class="header">
     <h1>🧠 SoulScribe</h1>
     <p>Your personal AI-powered mental health companion. Express your thoughts, 
        understand your emotions, and track your journey to well-being.</p>
   </div>
 
-  <!-- Navigation Tabs -->
+  
   <ul class="nav nav-tabs justify-content-center mb-4">
     <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
     <li class="nav-item"><a class="nav-link" href="#">Voice</a></li>
@@ -162,7 +165,7 @@
     <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
   </ul>
 
-  <!-- Calendar Card -->
+  
   <div class="card">
     <div class="calendar-header">
       <h5>📅 Mood Calendar</h5>
@@ -173,9 +176,9 @@
       </div>
     </div>
 
-    <!-- Calendar Grid -->
+    
     <div class="calendar-grid">
-      <!-- Weekdays -->
+      
       <div class="weekday">Sun</div>
       <div class="weekday">Mon</div>
       <div class="weekday">Tue</div>
@@ -184,7 +187,7 @@
       <div class="weekday">Fri</div>
       <div class="weekday">Sat</div>
 
-      <!-- Calendar Days -->
+      
       <div></div><div></div><div></div><div></div><div class="day">1</div><div class="day">2</div>
       <div class="day">3</div><div class="day">4</div><div class="day">5</div><div class="day">6</div>
       <div class="day emoji">😊</div><div class="day">8</div><div class="day">9</div>
@@ -197,7 +200,7 @@
       <div class="day">31</div>
     </div>
 
-    <!-- Legend -->
+    
     <div class="legend mt-4">
       <span>😁 Excellent (8-10)</span>
       <span>😊 Good (6-7)</span>
@@ -207,7 +210,8 @@
     </div>
   </div>
 </div>
-
+-->
+<!-- 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadMoodCalendar();
@@ -250,7 +254,393 @@ function updateCalendarWithMoods(moodData) {
         }
     });
 }
+</script> -->
+<!--
+</body>
+</html>
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoulScribe - Mood Calendar</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #f7f9fe;
+      font-family: 'Inter', sans-serif;
+      color: #222;
+    }
+
+    /* Date */
+    .date {
+      text-align: left;
+      font-size: 14px;
+      color: #5a5a5a;
+      margin-bottom: 10px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-weight: 700;
+      font-size: 28px;
+      color: #2b2b2b;
+    }
+    .header p {
+      font-size: 15px;
+      color: #555;
+    }
+
+    /* Navbar */
+    .nav-tabs {
+      border: none;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    .nav-tabs .nav-link {
+      border: none;
+      color: #444;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+    }
+    .nav-tabs .nav-link.active {
+      background: #f0edff;
+      color: #6b4ce6;
+      font-weight: 600;
+    }
+
+    /* Card (calendar wrapper) */
+    .card {
+      border: none;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+    .card h4 {
+      font-weight: 600;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Calendar Header */
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .calendar-header h5 {
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .calendar-header .btn {
+      background: #f0edff;
+      border: none;
+      font-weight: bold;
+      color: #6b4ce6;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .calendar-header .btn:hover {
+      background: #e0d9ff;
+    }
+
+    /* Calendar Grid */
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+    .day {
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fafafa;
+      font-weight: 500;
+      color: #333;
+      min-height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .day.empty {
+      background: transparent;
+      border: none;
+    }
+    .day.other-month {
+      color: #ccc;
+      background: #f9f9f9;
+    }
+    .weekday {
+      font-weight: 600;
+      color: #777;
+      font-size: 14px;
+      background: transparent !important;
+      border: none !important;
+      padding: 10px;
+    }
+    .day.active {
+      border: 2px solid #6b4ce6;
+      background: #f0edff;
+    }
+    .day.emoji {
+      font-size: 16px;
+    }
+    .day .mood-emoji {
+      font-size: 20px;
+      margin-top: 2px;
+    }
+
+    /* Legend */
+    .legend {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 14px;
+      color: #444;
+    }
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-4">
+
+  <!-- Date -->
+  <div class="date" id="currentDate">📅 Loading...</div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🧠 SoulScribe</h1>
+    <p>Your personal AI-powered mental health companion. Express your thoughts, 
+       understand your emotions, and track your journey to well-being.</p>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ul class="nav nav-tabs justify-content-center mb-4">
+    <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Voice</a></li>
+    <li class="nav-item"><a class="nav-link active" href="/calendar">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Insights</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Mindfulness</a></li>
+    <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+  </ul>
+
+  <!-- Calendar Card -->
+  <div class="card">
+    <div class="calendar-header">
+      <h5>📅 Mood Calendar</h5>
+      <div>
+        <button class="btn" id="prevMonth">&lt;</button>
+        <span id="monthYear">Loading...</span>
+        <button class="btn" id="nextMonth">&gt;</button>
+      </div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Calendar will be generated dynamically -->
+    </div>
+
+    <!-- Legend -->
+    <div class="legend mt-4">
+      <span>😁 Blissful (80-100)</span>
+      <span>😊 Good (60-79)</span>
+      <span>😐 Neutral (40-59)</span>
+      <span>😔 Low (20-39)</span>
+      <span>😣 Very Low (0-19)</span>  
+    </div>
+  </div>
+</div>
+
+<script>
+// Global variables
+let currentDate = new Date();
+let currentYear = currentDate.getFullYear();
+let currentMonth = currentDate.getMonth();
+const today = new Date();
+
+// Month names
+const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+// Weekday names
+const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Initialize calendar when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Update current date display
+    updateCurrentDate();
+    
+    // Generate calendar
+    generateCalendar(currentYear, currentMonth);
+    
+    // Load mood data
+    loadMoodCalendar(currentYear, currentMonth + 1);
+    
+    // Add event listeners for navigation buttons
+    document.getElementById('prevMonth').addEventListener('click', () => {
+        if (currentMonth === 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else {
+            currentMonth--;
+        }
+        generateCalendar(currentYear, currentMonth);
+        loadMoodCalendar(currentYear, currentMonth + 1);
+    });
+    
+    document.getElementById('nextMonth').addEventListener('click', () => {
+        if (currentMonth === 11) {
+            currentMonth = 0;
+            currentYear++;
+        } else {
+            currentMonth++;
+        }
+        generateCalendar(currentYear, currentMonth);
+        loadMoodCalendar(currentYear, currentMonth + 1);
+    });
+});
+
+// Update current date display
+function updateCurrentDate() {
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    const formattedDate = today.toLocaleDateString('en-US', options);
+    document.getElementById('currentDate').textContent = `📅 ${formattedDate}`;
+}
+
+// Generate calendar grid
+function generateCalendar(year, month) {
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthYear = document.getElementById('monthYear');
+    
+    // Update month/year display
+    monthYear.textContent = `${monthNames[month]} ${year}`;
+    
+    // Clear previous calendar
+    calendarGrid.innerHTML = '';
+    
+    // Add weekday headers
+    weekdays.forEach(day => {
+        const weekdayEl = document.createElement('div');
+        weekdayEl.className = 'weekday';
+        weekdayEl.textContent = day;
+        calendarGrid.appendChild(weekdayEl);
+    });
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = firstDay - 1; i >= 0; i--) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day other-month';
+        dayEl.textContent = daysInPrevMonth - i;
+        calendarGrid.appendChild(dayEl);
+    }
+    
+    // Add days of the current month
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day';
+        dayEl.innerHTML = `<div class="day-number">${day}</div>`;
+        dayEl.dataset.day = day;
+        
+        // Highlight today
+        if (year === today.getFullYear() && 
+            month === today.getMonth() && 
+            day === today.getDate()) {
+            dayEl.classList.add('active');
+        }
+        
+        calendarGrid.appendChild(dayEl);
+    }
+    
+    // Fill remaining cells with next month's days
+    const totalCells = calendarGrid.children.length;
+    const remainingCells = 42 - totalCells; // 6 rows × 7 days = 42 cells
+    
+    for (let day = 1; day <= remainingCells; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'day other-month';
+        dayEl.textContent = day;
+        calendarGrid.appendChild(dayEl);
+    }
+}
+
+// Load mood data from API
+async function loadMoodCalendar(year, month) {
+    try {
+        const response = await fetch(`/api/mood-calendar/${year}/${month}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Calendar data loaded:', data);
+            updateCalendarWithMoods(data.data);
+        } else {
+            console.error('API Error:', data.error);
+        }
+    } catch (error) {
+        console.error('Network Error:', error);
+        // Continue without mood data - don't block calendar functionality
+    }
+}
+
+// Update calendar with mood data
+function updateCalendarWithMoods(moodData) {
+    const dayElements = document.querySelectorAll('.day[data-day]');
+    
+    dayElements.forEach(dayEl => {
+        const day = parseInt(dayEl.dataset.day);
+        const dayNumberEl = dayEl.querySelector('.day-number');
+        
+        if (moodData[day]) {
+            const moodEmoji = getMoodEmoji(moodData[day]);
+            dayEl.innerHTML = `
+                <div class="day-number">${day}</div>
+                <div class="mood-emoji">${moodEmoji}</div>
+            `;
+            dayEl.classList.add('emoji');
+        }
+    });
+}
+
+// Convert mood score to emoji
+function getMoodEmoji(moodScore) {
+    if (moodScore >= 80) return '😁';      // Blissful
+    if (moodScore >= 60) return '😊';      // Good  
+    if (moodScore >= 40) return '😐';      // Neutral
+    if (moodScore >= 20) return '😔';      // Low
+    return '😣';                           // Very Low
+}
 </script>
 </body>
 </html>
-
