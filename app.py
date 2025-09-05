@@ -6,6 +6,12 @@ import secrets
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from collections import Counter
+from datetime import datetime
+import pytz
+
+ist=pytz.timezone('Asia/Kolkata')
+current_time = datetime.now(ist).strftime('%Y-%m-%d %H:%M')
 
 analyzer = SentimentIntensityAnalyzer()
 
@@ -197,8 +203,8 @@ def save_entry():
         with sqlite3.connect("soulscribe.db") as conn:
             cur = conn.cursor()
             cur.execute(
-                "INSERT INTO journal_entries (user_id, entry, ai_response,mood) VALUES (?, ?, ?,?)",
-                (session["user_id"], entry, ai_response,mood)
+                "INSERT INTO journal_entries (user_id, entry, ai_response,mood,created_at) VALUES (?, ?, ?,?,?)",
+                (session["user_id"], entry, ai_response,mood,current_time)
             )
             entry_id = cur.lastrowid
             conn.commit()
@@ -285,6 +291,258 @@ def format_date(date_string):
     except:
         return date_string  # Return original if formatting fails
 
+
+@app.route('/api/mood-calendar/<int:year>/<int:month>')
+def get_mood_calendar(year, month):
+    """
+    Get mood data for calendar display based on dominant mood per date
+    Returns: {date: emoji} mapping for the specified month/year
+    """
+    try:
+        # Use your existing database connection function
+        conn = get_db_connection()
+        cursor = conn.cursor()
+       
+        # Since you're already saving IST time, no timezone conversion needed
+        cursor.execute('''
+            SELECT
+                DATE(created_at) as entry_date,
+                mood
+            FROM journal_entries
+            WHERE user_id = ?
+            AND strftime('%Y', created_at) = ?
+            AND strftime('%m', created_at) = ?
+            AND mood IS NOT NULL
+            ORDER BY entry_date, created_at
+        ''', (session['user_id'], str(year), f"{month:02d}"))
+       
+        results = cursor.fetchall()
+        conn.close()
+       
+        # Define mood hierarchy and emojis
+        mood_emojis = {
+            'blissful': '😁',
+            'excellent': '😁',
+            'very_happy': '😁',
+            'good': '😊',
+            'happy': '😊',
+            'positive': '😊',
+            'neutral': '😐',
+            'okay': '😐',
+            'average': '😐',
+            'low': '😔',
+            'sad': '😔',
+            'down': '😔',
+            'very_low': '😣',
+            'very low': '😣',
+            'terrible': '😣',
+            'awful': '😣'
+        }
+       
+        # Group entries by date and count mood frequencies
+        date_moods = {}
+        for row in results:  # Changed: handle sqlite3.Row objects
+            day = int(row['entry_date'].split('-')[2])  # Extract day from YYYY-MM-DD
+           
+            if day not in date_moods:
+                date_moods[day] = []
+           
+            # Normalize mood to lowercase for comparison
+            normalized_mood = row['mood'].lower().strip()  # Changed: use row['mood']
+            date_moods[day].append(normalized_mood)
+       
+        # Calculate dominant mood for each date
+        calendar_data = {}
+        for day, moods in date_moods.items():
+            # Count frequency of each mood
+            mood_counter = Counter(moods)
+           
+            # Get the most common mood
+            dominant_mood = mood_counter.most_common(1)[0][0]
+           
+            # Get emoji for dominant mood
+            emoji = mood_emojis.get(dominant_mood, '😐')  # Default to neutral
+            calendar_data[day] = emoji
+           
+        return jsonify({
+            'success': True,
+            'data': calendar_data,
+            'month': month,
+            'year': year,
+            'summary': {
+                'total_entries_found': len(results),
+                'dates_with_entries': list(date_moods.keys())
+            }
+        })
+       
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+#########################################################
+
+
+
+
+@app.route('/api/mood-calendar', methods=['POST'])
+def get_mood_calendar_post():
+    """
+    Get mood data for calendar display based on dominant mood per date
+    POST method for testing with user_id in request body
+    
+    Request Body:
+    {
+        "user_id": 1,
+        "year": 2025,
+        "month": 8
+    }
+    
+    Returns: {date: emoji} mapping for the specified month/year
+    """
+    try:
+        # Get data from request body
+        data = request.get_json()
+        
+        # Validate required fields
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'Request body is required'
+            }), 400
+            
+        user_id = data.get('user_id')
+        year = data.get('year', datetime.now().year)
+        month = data.get('month', datetime.now().month)
+        
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'error': 'user_id is required'
+            }), 400
+            
+        # Validate year and month
+        if not (2020 <= year <= 2030):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid year. Must be between 2020-2030'
+            }), 400
+            
+        if not (1 <= month <= 12):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid month. Must be between 1-12'
+            }), 400
+        
+        # Connect to database using your existing function
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Check if table exists
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='journal_entries'")
+        table_exists = cursor.fetchone()
+        
+        if not table_exists:
+            conn.close()
+            return jsonify({
+                'success': False,
+                'error': 'journal_entries table not found in database'
+            }), 500
+        cursor.execute('''
+            SELECT 
+                DATE(created_at) as entry_date,
+                mood
+            FROM journal_entries 
+            WHERE user_id = ? 
+            AND strftime('%Y', created_at) = ?
+            AND strftime('%m', created_at) = ?
+            AND mood IS NOT NULL
+            ORDER BY entry_date, created_at
+        ''', (user_id, str(year), f"{month:02d}"))
+        
+        results = cursor.fetchall()
+        conn.close()
+        
+        # Define mood hierarchy and emojis
+        mood_emojis = {
+            'blissful': '😁',
+            'excellent': '😁', 
+            'very_happy': '😁',
+            'good': '😊',
+            'happy': '😊',
+            'positive': '😊',
+            'neutral': '😐',
+            'okay': '😐',
+            'average': '😐',
+            'low': '😔',
+            'sad': '😔',
+            'down': '😔',
+            'very_low': '😣',
+            'very low': '😣',
+            'terrible': '😣',
+            'awful': '😣'
+        }
+        
+        # Group entries by date and collect all moods for each date
+        date_moods = {}
+        for row in results:
+            day = int(row['entry_date'].split('-')[2])  # Extract day from YYYY-MM-DD
+            
+            if day not in date_moods:
+                date_moods[day] = []
+            
+            # Normalize mood to lowercase for comparison
+            normalized_mood = row['mood'].lower().strip()
+            date_moods[day].append(normalized_mood)
+        
+        # Calculate dominant mood for each date
+        calendar_data = {}
+        mood_details = {}  # For debugging
+        
+        for day, moods in date_moods.items():
+            # Count frequency of each mood
+            mood_counter = Counter(moods)
+            
+            # Get the most common mood (if tie, returns first one)
+            dominant_mood = mood_counter.most_common(1)[0][0]
+            dominant_count = mood_counter.most_common(1)[0][1]
+            
+            # Get emoji for dominant mood
+            emoji = mood_emojis.get(dominant_mood, '😐')  # Default to neutral
+            calendar_data[day] = emoji
+            
+            # Store details for debugging
+            mood_details[day] = {
+                'dominant_mood': dominant_mood,
+                'count': dominant_count,
+                'total_entries': len(moods),
+                'all_moods': dict(mood_counter)
+            }
+            
+        return jsonify({
+            'success': True,
+            'data': calendar_data,
+            'month': month,
+            'year': year,
+            'summary': {
+                'total_entries_found': len(results),
+                'dates_with_entries': list(date_moods.keys()),
+                'total_dates_with_moods': len(calendar_data)
+            },
+            'mood_details': mood_details  # Remove this in production
+        })
+        
+    except sqlite3.Error as db_error:
+        return jsonify({
+            'success': False,
+            'error': f'Database error: {str(db_error)}'
+        }), 500
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Server error: {str(e)}'
+        }), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

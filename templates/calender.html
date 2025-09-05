@@ -154,9 +154,9 @@
 
   <!-- Navigation Tabs -->
   <ul class="nav nav-tabs justify-content-center mb-4">
-    <li class="nav-item"><a class="nav-link" href="/index.html">Journal</a></li>
+    <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
     <li class="nav-item"><a class="nav-link" href="#">Voice</a></li>
-    <li class="nav-item"><a class="nav-link active" href="/calendar.html">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link active" href="/calendar">Calendar</a></li>
     <li class="nav-item"><a class="nav-link" href="#">Insights</a></li>
     <li class="nav-item"><a class="nav-link" href="#">Mindfulness</a></li>
     <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
@@ -203,10 +203,54 @@
       <span>😊 Good (6-7)</span>
       <span>😐 Neutral (4-5)</span>
       <span>😔 Low (2-3)</span>
-      <span>😣 Very Low (1)</span>
+      <span>😣 Very Low (1)</span>  
     </div>
   </div>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadMoodCalendar();
+});
+
+async function loadMoodCalendar(year = new Date().getFullYear(), month = new Date().getMonth() + 1) {
+    try {
+        const response = await fetch(`/api/mood-calendar/${year}/${month}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('Calendar data loaded:', data);
+            updateCalendarWithMoods(data.data);
+        } else {
+            console.error('API Error:', data.error);
+        }
+    } catch (error) {
+        console.error('Network Error:', error);
+    }
+}
+
+function updateCalendarWithMoods(moodData) {
+    // Clear existing emojis first
+    const dayElements = document.querySelectorAll('.day:not(.weekday)');
+    
+    dayElements.forEach(dayEl => {
+        const dayText = dayEl.textContent.trim();
+        const day = parseInt(dayText);
+        
+        if (!isNaN(day)) {
+            // Reset to just the day number
+            dayEl.innerHTML = day;
+            dayEl.classList.remove('emoji');
+            
+            // Add mood emoji if exists for this day
+            if (moodData[day]) {
+                dayEl.classList.add('emoji');
+                dayEl.innerHTML = `${day}<br>${moodData[day]}`;
+            }
+        }
+    });
+}
+</script>
 </body>
 </html>
+

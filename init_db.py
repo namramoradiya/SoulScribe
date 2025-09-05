@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS journal_entries (
     user_id INTEGER NOT NULL,
     entry TEXT NOT NULL,
     ai_response TEXT,  
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 )
 ''')
