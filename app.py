@@ -9,6 +9,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from collections import Counter
 from datetime import datetime
 import pytz
+from textblob import TextBlob 
 
 ist=pytz.timezone('Asia/Kolkata')
 current_time = datetime.now(ist).strftime('%Y-%m-%d %H:%M')
@@ -575,6 +576,120 @@ def get_mood_calendar_post():
             'success': False,
             'error': f'Server error: {str(e)}'
         }), 500
+
+@app.route('/api/journal-entries', methods=['POST'])
+def get_journal_entries():
+    """
+    Get all journal entries for a user on a particular date (for modal display).
+    
+    Request Body:
+    {
+        "user_id": 1,
+        "date": "2025-09-05"   # YYYY-MM-DD
+    }
+    """
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"success": False, "error": "Request body required"}), 400
+
+        user_id = data.get("user_id")
+        entry_date = data.get("date")
+
+        if not user_id or not entry_date:
+            return jsonify({"success": False, "error": "user_id and date are required"}), 400
+
+        # Validate date format
+        try:
+            datetime.strptime(entry_date, "%Y-%m-%d")
+        except ValueError:
+            return jsonify({"success": False, "error": "Invalid date format, expected YYYY-MM-DD"}), 400
+
+        # Connect to DB
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT id, user_id, entry, ai_response, created_at, mood
+            FROM journal_entries
+            WHERE user_id = ?
+            AND DATE(created_at) = DATE(?)
+            ORDER BY created_at
+        """, (user_id, entry_date))
+
+        results = cursor.fetchall()
+        conn.close()
+
+        if not results:
+            return jsonify({
+                "success": True,
+                "data": [],
+                "message": "No entries found for this date"
+            })
+
+        entries = []
+        for row in results:
+            text = row["entry"]
+
+            # --- Step 1: Detect emotions (very simple NLP stub here using TextBlob sentiment) ---
+            analysis = TextBlob(text).sentiment
+            polarity = analysis.polarity  # -1 (negative) to 1 (positive)
+
+            if polarity > 0.5:
+                emotions = ["Happy", "Excited", "Positive"]
+            elif polarity > 0.1:
+                emotions = ["Calm", "Content"]
+            elif polarity < -0.5:
+                emotions = ["Sad", "Angry", "Negative"]
+            elif polarity < -0.1:
+                emotions = ["Low", "Anxious"]
+            else:
+                emotions = ["Neutral"]
+
+            # --- Step 2: Map to mood score (0-10 scale) ---
+            # Example: polarity (-1..1) → score (0..10)
+            mood_score = round((polarity + 1) * 5, 1)  # (-1 → 0, 0 → 5, 1 → 10)
+
+            entry_data = {
+                "id": row["id"],
+                "entry": row["entry"],
+                "ai_response": row["ai_response"],
+                "created_at": row["created_at"],
+                "mood": row["mood"],
+                "emotions": emotions,
+                "mood_score": mood_score
+            }
+            entries.append(entry_data)
+
+        return jsonify({
+            "success": True,
+            "data": entries,
+            "count": len(entries),
+            "date": entry_date
+        })
+
+    except sqlite3.Error as db_error:
+        return jsonify({"success": False, "error": f"Database error: {str(db_error)}"}), 500
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
+
+
+@app.route('/api/me', methods=['GET'])
+def api_me():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"success": False, "error": "Not authenticated"}), 401
+    # Optionally return more info
+    return jsonify({
+        "success": True,
+        "user": {
+            "user_id": user_id,
+            "name": session.get("name"),
+            "email": session.get("email")
+        }
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)
