@@ -690,6 +690,10 @@ def api_me():
         }
     })
 
+@app.route('/mindfulness')
+def mindfulness():
+    return render_template('mindfulness.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
