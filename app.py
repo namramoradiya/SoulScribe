@@ -695,5 +695,10 @@ def mindfulness():
     return render_template('mindfulness.html')
 
 
+@app.route('/insights')
+def insights():
+    return render_template('insights.html')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
