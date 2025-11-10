@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash,jsonify,session
-from google import genai
+# from google import genai
+import google.generativeai as genai
 import sqlite3
 import os
 import secrets
@@ -7,12 +8,13 @@ from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from collections import Counter
-from datetime import datetime
+from datetime import datetime,timedelta
 import pytz
 from textblob import TextBlob 
 
 ist=pytz.timezone('Asia/Kolkata')
-current_time = datetime.now(ist).strftime('%Y-%m-%d %H:%M')
+# current_time = datetime.now(ist).strftime('%Y-%m-%d %H:%M')
+current_time = datetime.now(ist).strftime('%Y-%m-%d %H:%M:%S')
 
 analyzer = SentimentIntensityAnalyzer()
 
@@ -95,23 +97,23 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 # app = Flask(__name__)
 
 # Initialize Gemini Client
-client = genai.Client(api_key=API_KEY)
+# client = genai.Client(api_key=API_KEY)
+
+genai.configure(api_key=API_KEY)
+
+model = genai.GenerativeModel("models/gemini-2.5-flash")
 
 # Create a chat session
-chat = client.chats.create(
-    model="gemini-1.5-flash",
+chat = model.start_chat(
     history=[
-        {
-            "role": "user",
-            "parts": [
-                {"text": (
-                    "You are SoulScribe, a warm and empathetic journaling companion. "
-                    "Always acknowledge the user's feelings first, reflect them back, "
-                    "and offer 1–2 gentle, supportive suggestions. Keep responses under 4 sentences."
-                )}
-            ]
-        },
-        {"role": "model", "parts": [{"text": "Understood. I’ll keep my tone warm, empathetic, and concise."}]}
+        {"role": "user", "parts": [
+            "You are SoulScribe, a warm and empathetic journaling companion. "
+            "Always acknowledge the user's feelings first, reflect them back, "
+            "and offer 1–2 gentle, supportive suggestions. Keep responses under 4 sentences."
+        ]},
+        {"role": "model", "parts": [
+            "Understood. I’ll keep my tone warm, empathetic, and concise."
+        ]}
     ]
 )
 
@@ -698,6 +700,135 @@ def mindfulness():
 @app.route('/insights')
 def insights():
     return render_template('insights.html')
+
+from datetime import datetime, timedelta
+
+from datetime import datetime, timedelta
+
+@app.route('/api/mood-journey', methods=['POST'])
+def get_mood_journey():
+    """
+    Returns mood scores (0-10 scale) for actual journal entries in the last 14 days.
+    Multiple entries on the same day are averaged. Missing days are skipped.
+    """
+    try:
+        data = request.get_json()
+        if not data or 'user_id' not in data:
+            return jsonify({"success": False, "error": "user_id is required"}), 400
+
+        user_id = data['user_id']
+        today = datetime.now().date()
+        start_date = today - timedelta(days=13)
+
+        # Convert dates to string for SQLite
+        start_date_str = start_date.strftime('%Y-%m-%d')
+        today_str = today.strftime('%Y-%m-%d')
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT DATE(created_at) as entry_date, mood
+            FROM journal_entries
+            WHERE user_id = ?
+            AND DATE(created_at) BETWEEN ? AND ?
+            ORDER BY entry_date ASC
+        ''', (user_id, start_date_str, today_str))
+
+        rows = cursor.fetchall()
+        conn.close()
+
+        if not rows:
+            return jsonify({"success": True, "data": []})  # no entries
+
+        # Map moods to 0-10 scale
+        mood_to_score = {
+            "blissful": 10,
+            "excellent": 9,
+            "very_happy": 8,
+            "good": 7,
+            "neutral": 5,
+            "okay": 5,
+            "average": 5,
+            "low": 3,
+            "very_low": 1,
+            "very low": 1,
+            "sad": 2
+        }
+
+        # Aggregate scores by date
+        mood_data = {}
+        for row in rows:
+            date = row[0]             # DATE(created_at)
+            mood = row[1].lower().strip()
+            score = mood_to_score.get(mood, 5)
+            mood_data.setdefault(date, []).append(score)
+
+        # Prepare chart data with averaged scores per day
+        chart_data = []
+        for date, scores in mood_data.items():
+            avg_score = sum(scores) / len(scores)
+            chart_data.append({
+                "date": date,
+                "mood_score": round(avg_score, 1)
+            })
+
+        # Sort by date ascending
+        chart_data.sort(key=lambda x: x['date'])
+
+        return jsonify({"success": True, "data": chart_data})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+    
+
+@app.route('/api/sentiment-distribution', methods=['POST'])
+def get_sentiment_distribution():
+    """
+    Returns % distribution of Positive, Neutral, and Negative moods.
+    Simplified mapping:
+        Neutral -> neutral
+        Low, Very Low -> negative
+        Good, Blissful -> positive
+    """
+    try:
+        data = request.get_json()
+        if not data or 'user_id' not in data:
+            return jsonify({"success": False, "error": "user_id is required"}), 400
+
+        user_id = data['user_id']
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT mood FROM journal_entries WHERE user_id = ? AND mood IS NOT NULL', (user_id,))
+        rows = cursor.fetchall()
+        conn.close()
+
+        # Initialize counts
+        sentiment_counts = {"positive": 0, "neutral": 0, "negative": 0}
+
+        for row in rows:
+            mood = row[0].strip().lower()
+            if mood == "neutral":
+                sentiment_counts["neutral"] += 1
+            elif mood in ["low", "very low"]:
+                sentiment_counts["negative"] += 1
+            elif mood in ["good", "blissful"]:
+                sentiment_counts["positive"] += 1
+
+        total = sum(sentiment_counts.values())
+        # Avoid division by zero
+        if total == 0:
+            percentages = {"positive": 0, "neutral": 0, "negative": 0}
+        else:
+            percentages = {k: round((v / total) * 100, 2) for k, v in sentiment_counts.items()}
+
+        return jsonify({"success": True, "data": percentages})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 if __name__ == "__main__":
