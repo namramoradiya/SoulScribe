@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash,jsonify,session
+import speech_recognition as sr
+# from google import genai
+from pydub import AudioSegment
 from google import genai
 import sqlite3
 import os
@@ -323,6 +326,123 @@ def format_date(date_string):
         return dt.strftime('%B %d, %Y at %I:%M %p')  # e.g., "January 15, 2024 at 02:30 PM"
     except:
         return date_string  # Return original if formatting fails
+
+
+@app.route("/api/upload_audio", methods=["POST"])
+def upload_audio():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if "audio" not in request.files:
+        return jsonify({"error": "No audio file provided"}), 400
+
+    audio_file = request.files["audio"]
+    if audio_file.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
+
+    try:
+        raw_path = os.path.join("uploads", "temp_input.webm")
+        wav_path = os.path.join("uploads", "temp_converted.wav")
+
+        audio_file.save(raw_path)
+        AudioSegment.from_file(raw_path).export(wav_path, format="wav")
+
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(wav_path) as source:
+            audio_data = recognizer.record(source)
+            try:
+                transcription = recognizer.recognize_google(audio_data)
+            except sr.UnknownValueError:
+                transcription = "(Could not understand the audio clearly)"
+            except sr.RequestError as e:
+                transcription = f"(Speech recognition error: {e})"
+
+        os.remove(raw_path)
+        os.remove(wav_path)
+
+        return jsonify({"transcription": transcription})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# -------------------------------------------
+# 🤖 2. TRANSCRIPT → AI RESPONSE
+# -------------------------------------------
+@app.route("/api/voice_ai_response", methods=["POST"])
+def voice_ai_response():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json()
+    transcript = (data.get("transcript") or "").strip()
+
+    # 🎙️ Handle unclear or empty transcription
+    if not transcript or transcript.lower().startswith("(could not"):
+        return jsonify({
+            "ai_response": "I couldn’t quite hear your voice clearly. Try speaking slowly or closer to the mic 💜"
+        })
+
+    try:
+        # 💬 Use the same global chat context for empathy and tone
+        response = chat.send_message(
+            f"The user recorded a voice note saying: \"{transcript}\". "
+            "Please respond as SoulScribe — warm, empathetic, and supportive in under 4 sentences."
+        )
+
+        ai_response = response.text.strip() if response.text else ""
+        if not ai_response:
+            ai_response = (
+                "I'm here with you — sometimes words come out softly, but I still hear your feelings. 💜"
+            )
+
+        print(f"[🎙 Transcript] {transcript}")
+        print(f"[💬 AI Response] {ai_response}")
+
+        return jsonify({"ai_response": ai_response})
+
+    except Exception as e:
+        print(f"[AI ERROR - voice_ai_response] {e}")
+        return jsonify({
+            "ai_response": (
+                "I'm having a little trouble connecting right now, "
+                "but your words still matter — take a breath and try again when you’re ready. 💜"
+            )
+        })
+
+
+# -------------------------------------------
+# 💾 3. SAVE VOICE ENTRY (Transcript + AI)
+# -------------------------------------------
+@app.route("/api/save_voice_entry", methods=["POST"])
+def save_voice_entry():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    data = request.get_json() or {}
+    transcript = (data.get("transcript") or "").strip()
+    ai_response = (data.get("ai_response") or "").strip()
+    mood = data.get("mood", "")
+    created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    if not transcript or not ai_response:
+        return jsonify({"error": "Missing transcript or ai_response"}), 400
+
+    try:
+        with sqlite3.connect("soulscribe.db") as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                INSERT INTO journal_entries (user_id, entry, ai_response, mood, created_at)
+                VALUES (?, ?, ?, ?, ?)
+            """, (session["user_id"], transcript, ai_response, mood, current_time))
+            conn.commit()
+
+        return jsonify({"ok": True, "message": "Voice entry saved successfully."})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 
 @app.route('/api/mood-calendar/<int:year>/<int:month>')
@@ -693,6 +813,11 @@ def api_me():
 @app.route('/mindfulness')
 def mindfulness():
     return render_template('mindfulness.html')
+
+@app.route('/voice')
+def voice():
+    return render_template('voice.html')
+
 
 
 if __name__ == "__main__":
