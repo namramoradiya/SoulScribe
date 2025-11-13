@@ -841,6 +841,11 @@ def get_journal_entries():
         return jsonify({"success": False, "error": f"Server error: {str(e)}"}), 500
 
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
 @app.route('/api/me', methods=['GET'])
 def api_me():
     user_id = session.get('user_id')
