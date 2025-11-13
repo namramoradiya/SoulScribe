@@ -1,12 +1,9 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoulScribe - Mood Calendar</title>
+  <title>SoulScribe - Journal History</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
@@ -14,14 +11,6 @@
       background: #f7f9fe;
       font-family: 'Inter', sans-serif;
       color: #222;
-    }
-
-    /* Date */
-    .date {
-      text-align: left;
-      font-size: 14px;
-      color: #5a5a5a;
-      margin-bottom: 10px;
     }
 
     /* Header */
@@ -37,6 +26,12 @@
     .header p {
       font-size: 15px;
       color: #555;
+    }
+    .date {
+      text-align: left;
+      font-size: 14px;
+      color: #5a5a5a;
+      margin-bottom: 10px;
     }
 
     /* Navbar */
@@ -58,260 +53,95 @@
       font-weight: 600;
     }
 
-    /* Card (calendar wrapper) */
-    .card {
+    /* Entry Card */
+    .entry-card {
       border: none;
       border-radius: 14px;
       background: #fff;
       box-shadow: 0 5px 15px rgba(0,0,0,0.08);
       padding: 20px;
-    }
-    .card h4 {
-      font-weight: 600;
-      font-size: 20px;
       margin-bottom: 20px;
-    }
-
-    /* Calendar Header */
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .calendar-header h5 {
-      font-weight: 600;
-      font-size: 18px;
-    }
-    .calendar-header .btn {
-      background: #f0edff;
-      border: none;
-      font-weight: bold;
-      color: #6b4ce6;
-      padding: 4px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .calendar-header .btn:hover {
-      background: #e0d9ff;
-    }
-
-    /* Calendar Grid */
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-      text-align: center;
-    }
-    .day {
-      padding: 20px;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      background: #fafafa;
-      font-weight: 500;
-      color: #333;
-      min-height: 65px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-    .day.empty {
-      background: transparent;
-      border: none;
-    }
-    .day.other-month {
-      color: #ccc;
-      background: #f9f9f9;
-    }
-    .weekday {
-      font-weight: 600;
-      color: #777;
-      font-size: 14px;
-      background: transparent !important;
-      border: none !important;
-      padding: 10px;
-    }
-    .day.active {
-      border: 2px solid #6b4ce6;
-      background: #f0edff;
-    }
-    .day.emoji {
-      font-size: 16px;
-    }
-    .day .mood-emoji {
-      font-size: 20px;
-      margin-top: 2px;
-    }
-
-    /* Legend */
-    .legend {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      font-size: 14px;
-      color: #444;
-    }
-    .legend span {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* ---------- Modal visual replication (paste at end of your existing <style>) ---------- */
-
-.modal-dialog-centered .modal-dialog {
-      max-width: 840px;
-      margin: 1.75rem auto;
-    }
-
-    .modal-content.modal-custom {
-      border-radius: 10px;
-      padding: 18px;
-      box-shadow: 0 8px 30px rgba(19, 24, 31, 0.18);
-      border: none;
-      overflow: visible;
-    }
-
-    /* Header row */
-    .modal-header-custom {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 2px 14px 2px;
-      border-bottom: 1px solid #eef0f3;
-      margin-bottom: 16px;
-    }
-
-    /* emoji at left */
-    .modal-header-custom .emoji-large {
-      font-size: 22px;
-      width: 36px;
-      height: 36px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      background: #fff8ea;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-      margin-right: 6px;
-    }
-
-    /* title */
-    .modal-header-custom h5 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 18px;
-      color: #1f2937;
-    }
-
-    /* close button (circle) */
-    .modal-close-circle {
-      position: absolute;
-      right: 14px;
-      top: 12px;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 1px solid #d7d7d7;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      color: #333;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    /* Entry card styles */
-    .entry-card {
-      background: #fff;
-      border-radius: 10px;
-      border: 1px solid #eef0f3;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .entry-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .entry-number {
-      font-weight: 600;
-      color: #6b4ce6;
-    }
-
-    .entry-date {
-      font-size: 13px;
-      color: #777;
-    }
-
-    .mood-score {
-      background: #eef3ff;
-      color: #2b2b2b;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-weight: 600;
       font-size: 14px;
-      margin-right: 8px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .entry-mood {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .entry-actions button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 8px;
+    }
+    .entry-actions .delete {
+      color: #e63946;
     }
 
-    .emotion-pill {
+    /* Tags */
+    .tag {
       display: inline-block;
-      background: #faf0ff;
-      color: #6b4ce6;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-weight: 600;
+      padding: 3px 10px;
+      margin: 2px;
       font-size: 12px;
-      margin-right: 6px;
-      margin-bottom: 6px;
+      border-radius: 6px;
+      font-weight: 500;
     }
+    .positive { background: #d1fae5; color: #065f46; }
+    .neutral { background: #e0e7ff; color: #3730a3; }
+    .negative { background: #fee2e2; color: #991b1b; }
+    .happy { background: #fef9c3; color: #854d0e; }
+    .sad { background: #dbeafe; color: #1e40af; }
+    .angry { background: #ffe4e6; color: #9f1239; }
+    .blissful { background: #d1fae5; color: #065f46; }
+    .good { background: #fef9c3; color: #854d0e; }
+    .very-low { background: #fee2e2; color: #991b1b; }
 
-    .journal-text {
-      background: #fbfdff;
-      border: 1px solid #f0f2f5;
-      padding: 14px;
-      border-radius: 8px;
-      color: #2b2b2b;
-      line-height: 1.6;
-      margin-bottom: 12px;
-      white-space: pre-line;
-    }
-
+    /* AI Summary */
     .ai-summary {
-      background: #eef4ff;
-      border: 1px solid #e7efff;
-      padding: 14px;
+      margin-top: 12px;
+      background: #eef0fb;
+      border-left: 4px solid #b3a4f4;
+      padding: 12px;
       border-radius: 8px;
-      color: #2b2b2b;
-      font-style: italic;
-      white-space: pre-line;
-    }
-
-    .section-label {
-      font-weight: 600;
-      color: #3b3b3b;
-      margin-bottom: 6px;
       font-size: 14px;
+      color: #444;
     }
 
-    .entries-container {
-      max-height: 60vh;
+    /* Loading and States */
+    .loading-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    .empty-state h5 {
+      margin-bottom: 15px;
+      color: #444;
+    }
+    .error-state {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    /* Modal */
+    .modal-body {
+      max-height: 500px;
       overflow-y: auto;
-      padding-right: 8px;
     }
-
-    .emotions-container {
-      margin: 8px 0;
-    }
-
   </style>
 </head>
 <body>
@@ -319,20 +149,7 @@
 <div class="container py-4">
 
   <!-- Date -->
-  <div class="d-flex w-100 justify-content-between align-items-center mb-3">
-    
-    <!-- Date -->
-    <div class="date" style="font-size: 14px; color: #5a5a5a;">
-        📅 Thursday, November 13, 2025
-    </div>
-
-    <!-- Logout -->
-    <a href="/logout" 
-       class="text-decoration-none"
-       style="font-size: 14px; color: #6b4ce6; font-weight: 600;">
-        Logout
-    </a>
-</div>
+  <div class="date" id="current-date">📅 Friday, August 22, 2025</div>
 
   <!-- Header -->
   <div class="header">
@@ -344,612 +161,285 @@
   <!-- Navigation Tabs -->
   <ul class="nav nav-tabs justify-content-center mb-4">
     <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
-    <li class="nav-item"><a class="nav-link" href="/voice">Voice</a></li>
-    <li class="nav-item"><a class="nav-link active" href="/calendar">Calendar</a></li>
-    <li class="nav-item"><a class="nav-link" href="/insights">Insights</a></li>
-    <li class="nav-item"><a class="nav-link" href="/mindfulness">Mindfulness</a></li>
-    <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Voice</a></li>
+    <li class="nav-item"><a class="nav-link" href="/calender">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Insights</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Mindfulness</a></li>
+    <li class="nav-item"><a class="nav-link active" href="/history">History</a></li>
   </ul>
 
-  <!-- Calendar Card -->
-  <div class="card">
-    <div class="calendar-header">
-      <h5>📅 Mood Calendar</h5>
-      <div>
-        <button class="btn" id="prevMonth">&lt;</button>
-        <span id="monthYear">Loading...</span>
-        <button class="btn" id="nextMonth">&gt;</button>
+  <!-- Loading State -->
+  <div id="loading-state" class="loading-state">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-3">Loading your journal entries...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div id="empty-state" class="empty-state" style="display: none;">
+    <h5>📝 No journal entries yet</h5>
+    <p>Start writing to see your history here!</p>
+    <a href="/index" class="btn btn-primary">Write Your First Entry</a>
+  </div>
+
+  <!-- Error State -->
+  <div id="error-state" class="error-state" style="display: none;">
+    <div class="alert alert-danger">
+      <h6>❌ Error loading history</h6>
+      <p id="error-message">Something went wrong. Please try again later.</p>
+      <button class="btn btn-outline-danger btn-sm" onclick="loadHistory()">Retry</button>
+    </div>
+  </div>
+
+  <!-- Dynamic Content Container -->
+  <div id="content-container" style="display: none;">
+    <!-- History Title -->
+    <h4 class="mb-4" id="history-title">📖 Journal History</h4>
+    
+    <!-- History Entries Container -->
+    <div id="history-entries"></div>
+  </div>
+
+</div>
+
+<!-- View Entry Modal -->
+<div class="modal fade" id="viewEntryModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📖 Full Journal Entry</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-    </div>
-
-    <!-- Calendar Grid -->
-    <div class="calendar-grid" id="calendarGrid">
-      <!-- Calendar will be generated dynamically -->
-    </div>
-
-    <!-- Legend -->
-    <div class="legend mt-4">
-      <span>😁 Blissful (80-100)</span>
-      <span>😊 Good (60-79)</span>
-      <span>😐 Neutral (40-59)</span>
-      <span>😔 Low (20-39)</span>
-      <span>😣 Very Low (0-19)</span>  
+      <div class="modal-body">
+        <div id="modal-date" class="text-muted mb-2"></div>
+        <div id="modal-mood" class="mb-3"></div>
+        <h6>Your Entry:</h6>
+        <p id="modal-entry" class="mb-3" style="white-space: pre-wrap;"></p>
+        <h6>AI Response:</h6>
+        <div id="modal-ai-response" class="ai-summary"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- REPLACE existing modal with this -->
-<div class="modal fade" id="journalModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content modal-custom position-relative">
-
-      <!-- Close circle (top-right) -->
-      <button type="button" class="modal-close-circle" data-bs-dismiss="modal" aria-label="Close">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 6L18 18M6 18L18 6" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-
-      <!-- Header: emoji + title -->
-      <div class="modal-header-custom">
-        <div class="emoji-large">📝</div>
-        <h5 id="modalDateTitle">Journal Entries</h5>
-      </div>
-
-      <div class="modal-body px-0">
-        <div class="entries-container" id="entriesContainer">
-          <!-- Entries will be dynamically inserted here -->
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-// Global variables
-let currentDate = new Date();
-let currentYear = currentDate.getFullYear();
-let currentMonth = currentDate.getMonth();
-const today = new Date();
-
-// Month names
-const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
-];
-
-// Weekday names
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-let USER_ID = null;
-function formatDateDisplay(dateOrStr) {
-  if (!dateOrStr) return '';
-  if (dateOrStr instanceof Date && !isNaN(dateOrStr)) {
-    const d = dateOrStr;
-    return `${d.getMonth()+1}/${d.getDate()}/${d.getFullYear()}`;
-  }
-  const parsed = new Date(dateOrStr);
-  if (!isNaN(parsed)) {
-    return `${parsed.getMonth()+1}/${parsed.getDate()}/${parsed.getFullYear()}`;
-  }
-  return String(dateOrStr);
-}
-
-/* Defensive escapeHtml (only defines if missing) */
-if (typeof escapeHtml !== 'function') {
-  function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-}
-
-/* Safe modal show wrapper (catches errors and provides fallback) */
-function safeShowModal(modalEl) {
-  try {
-    const m = new bootstrap.Modal(modalEl);
-    m.show();
-  } catch (err) {
-    console.error('Failed to show bootstrap modal:', err);
-    modalEl.classList.add('show');
-    modalEl.style.display = 'block';
-  }
-}
-async function loadUser() {
-  try {
-    const res = await fetch('/api/me', { credentials: 'same-origin' }); // same-origin cookie
-    const json = await res.json();
-    if (json.success) {
-      USER_ID = json.user.user_id;
-      console.log('Logged in user:', USER_ID);
-      // Now you can call loadMoodCalendar(currentYear, currentMonth+1, USER_ID) or simply set global
-      loadMoodCalendar(currentYear, currentMonth + 1);
-    } else {
-      console.log('Not logged in');
-    }
-  } catch (e) {
-    console.error('Failed to fetch user info', e);
-  }
-}
-
-// Initialize calendar when page loads
-document.addEventListener('DOMContentLoaded', async()=> {
-    // Update current date display
-    updateCurrentDate();
-    await loadUser();
-    
-    // Generate calendar
-    generateCalendar(currentYear, currentMonth);
-    
-    // Load mood data
-    loadMoodCalendar(currentYear, currentMonth + 1);
-    
-    // Add event listeners for navigation buttons
-    document.getElementById('prevMonth').addEventListener('click', () => {
-        if (currentMonth === 0) {
-            currentMonth = 11;
-            currentYear--;
-        } else {
-            currentMonth--;
-        }
-        generateCalendar(currentYear, currentMonth);
-        loadMoodCalendar(currentYear, currentMonth + 1);
-    });
-    
-    document.getElementById('nextMonth').addEventListener('click', () => {
-        if (currentMonth === 11) {
-            currentMonth = 0;
-            currentYear++;
-        } else {
-            currentMonth++;
-        }
-        generateCalendar(currentYear, currentMonth);
-        loadMoodCalendar(currentYear, currentMonth + 1);
-    });
-});
-
-// Update current date display
-function updateCurrentDate() {
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    const formattedDate = today.toLocaleDateString('en-US', options);
-    document.getElementById('currentDate').textContent = `📅 ${formattedDate}`;
-}
-
-// Generate calendar grid
-function generateCalendar(year, month) {
-    const calendarGrid = document.getElementById('calendarGrid');
-    const monthYear = document.getElementById('monthYear');
-    
-    // Update month/year display
-    monthYear.textContent = `${monthNames[month]} ${year}`;
-    
-    // Clear previous calendar
-    calendarGrid.innerHTML = '';
-    
-    // Add weekday headers
-    weekdays.forEach(day => {
-        const weekdayEl = document.createElement('div');
-        weekdayEl.className = 'weekday';
-        weekdayEl.textContent = day;
-        calendarGrid.appendChild(weekdayEl);
-    });
-    
-    // Get first day of month and number of days
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysInPrevMonth = new Date(year, month, 0).getDate();
-    
-    // Add empty cells for days before the first day of the month
-    for (let i = firstDay - 1; i >= 0; i--) {
-        const dayEl = document.createElement('div');
-        dayEl.className = 'day other-month';
-        dayEl.textContent = daysInPrevMonth - i;
-        calendarGrid.appendChild(dayEl);
-    }
-    
-    // Add days of the current month
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayEl = document.createElement('div');
-        dayEl.className = 'day';
-        dayEl.innerHTML = `<div class="day-number">${day}</div>`;
-        dayEl.dataset.day = day;
-        
-        // Highlight today
-        if (year === today.getFullYear() && 
-            month === today.getMonth() && 
-            day === today.getDate()) {
-            dayEl.classList.add('active');
-        }
-        
-        calendarGrid.appendChild(dayEl);
-    }
-    
-    // Fill remaining cells with next month's days
-    const totalCells = calendarGrid.children.length;
-    const remainingCells = 42 - totalCells; // 6 rows × 7 days = 42 cells
-    
-    for (let day = 1; day <= remainingCells; day++) {
-        const dayEl = document.createElement('div');
-        dayEl.className = 'day other-month';
-        dayEl.textContent = day;
-        calendarGrid.appendChild(dayEl);
-    }
-}
-// Static test content - remove/replace later when you wire dynamic data
-
-
-// Load mood data from API
-// async function loadMoodCalendar(year, month) {
-//     try {
-//         const response = await fetch(`/api/mood-calendar/${year}/${month}`);
-//         const data = await response.json();
-        
-//         if (data.success) {
-//             console.log('Calendar data loaded:', data);
-//             updateCalendarWithMoods(data.data);
-//         } else {
-//             console.error('API Error:', data.error);
-//         }
-//     } catch (error) {
-//         console.error('Network Error:', error);
-//         // Continue without mood data - don't block calendar functionality
-//     }
-// }
-
-async function loadMoodCalendar(year, month) {
-  try {
-    const response = await fetch(`/api/mood-calendar/${year}/${month}`);
-    const data = await response.json();
-    if (data.success) {
-      console.log('Calendar data loaded:', data);
-      // pass USER_ID so emoji click has it
-      updateCalendarWithMoods(data.data, USER_ID);
-    } else {
-      console.error('API Error:', data.error);
-      updateCalendarWithMoods({}, USER_ID);
-    }
-  } catch (error) {
-    console.error('Network Error:', error);
-    updateCalendarWithMoods({}, USER_ID);
-  }
-}
-
-
-// Update calendar with mood data
-// function updateCalendarWithMoods(moodData) {
-//     const dayElements = document.querySelectorAll('.day[data-day]');
-    
-//     dayElements.forEach(dayEl => {
-//         const day = parseInt(dayEl.dataset.day);
-//         const dayNumberEl = dayEl.querySelector('.day-number');
-        
-//         if (moodData[day]) {
-//             const moodEmoji = getMoodEmoji(moodData[day]);
-//             dayEl.innerHTML = `
-//                 <div class="day-number">${day}</div>
-//                 <div class="mood-emoji">${moodEmoji}</div>
-//             `;
-//             dayEl.classList.add('emoji');
-//         }
-//     });
-// }
-
-// Convert mood score to emoji
-function getMoodEmoji(moodScore) {
-    if (moodScore >= 80) return '😁';      // Blissful
-    if (moodScore >= 60) return '😊';      // Good  
-    if (moodScore >= 40) return '😐';      // Neutral
-    if (moodScore >= 20) return '😔';      // Low
-    return '😣';                           // Very Low
-}
-
-
-function updateCalendarWithMoods(moodData, userId) {
-  const dayElements = document.querySelectorAll('.day[data-day]');
-
-  dayElements.forEach(dayEl => {
-    const day = parseInt(dayEl.dataset.day, 10);
-
-    // remove previous emoji element
-    const old = dayEl.querySelector('.mood-emoji');
-    if (old) old.remove();
-    dayEl.classList.remove('emoji', 'has-entry');
-    dayEl._entry = null;
-
-    // normalize moodData: if moodData[day] is object, try to extract emoji
-    let cellVal = moodData ? moodData[day] : null;
-    let emojiChar = null;
-
-    if (!cellVal) {
-      // no entry for this day
-      return;
-    }
-
-    // if cellVal is an object like { mood: 70 } or { mood: 'happy' }, try to convert
-    if (typeof cellVal === 'object') {
-      if (typeof cellVal.mood === 'number') emojiChar = getMoodEmoji(cellVal.mood);
-      else if (typeof cellVal.mood === 'string') emojiChar = cellVal.emoji || cellVal.mood;
-    } else {
-      // assume it's already an emoji string
-      emojiChar = cellVal;
-    }
-
-    // create emoji element
-    const emojiEl = document.createElement('div');
-    emojiEl.className = 'mood-emoji';
-    emojiEl.textContent = emojiChar || '😐';
-    emojiEl.style.cursor = 'pointer';
-
-    // attach click -> fetch entries for this date
-    emojiEl.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      console.log('Emoji clicked for date:', dateStr, 'userId:', userId);
-      fetchJournalEntries(userId, dateStr);
-    });
-
-    dayEl.appendChild(emojiEl);
-    dayEl.classList.add('emoji', 'has-entry');
-  });
-}
-
-/* -------------------------
-   Fetch journal entries for a particular date and user
-   We assume your Flask endpoint is POST /api/journal-entries expecting JSON:
-     { user_id: X, date: "YYYY-MM-DD" }
-   and returns { success: true, data: [ ...entries... ] }
-   Each entry should include: id, entry, ai_response, created_at, mood, emotions (if added), mood_score (we expect from API)
-   ------------------------- */
-// Robust fetchJournalEntries - replace your current version with this
-async function fetchJournalEntries(userId, dateStr) {
-  // If you switched to session-based server (preferred), you can pass null for userId
-  try {
-    // Build body: send user_id only if you rely on client-provided id.
-    const body = userId ? { user_id: userId, date: dateStr } : { date: dateStr };
-
-    const res = await fetch('/api/journal-entries', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',        // <--- send session cookie
-      body: JSON.stringify(body)
-    });
-
-    // Helpful debug output
-    console.log('journal-entries HTTP status:', res.status);
-
-    // If response is not JSON (e.g. redirect to login page), read as text so we can log it
-    const contentType = res.headers.get('content-type') || '';
-    let json;
-    if (contentType.includes('application/json')) {
-      json = await res.json();
-    } else {
-      const txt = await res.text();
-      console.error('Expected JSON but got:', txt);
-      // show friendly modal with error
-      document.getElementById('modalDate').textContent = `📝 Entries from ${dateStr}`;
-      document.getElementById('modalJournalEntry').innerHTML = `<div class="p-2">Could not load entries (server returned non-JSON). Check console/network.</div>`;
-      document.getElementById('modalMoodLevel').textContent = '';
-      document.getElementById('modalEmotionsContainer').textContent = '';
-      document.getElementById('modalSummary').textContent = '';
-      new bootstrap.Modal(document.getElementById('journalModal')).show();
-      return;
-    }
-
-    console.log('journal-entries JSON:', json);
-
-    // Handle success / no-data / error
-    if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-      populateJournalModal(dateStr, json.data);
-    } else if (json && json.success && Array.isArray(json.data) && json.data.length === 0) {
-      // show modal with "no entries" message
-      document.getElementById('modalDate').textContent = `📝 Entry from ${dateStr}`;
-      document.getElementById('modalJournalEntry').innerHTML = `<div class="p-2">No entries found for this date.</div>`;
-      document.getElementById('modalMoodLevel').textContent = '';
-      document.getElementById('modalEmotionsContainer').textContent = '';
-      document.getElementById('modalSummary').textContent = '';
-      new bootstrap.Modal(document.getElementById('journalModal')).show();
-    } else {
-      // API returned success:false or unexpected shape
-      const errMsg = (json && json.error) ? json.error : 'Unexpected server response';
-      console.error('Journal API error:', errMsg);
-      document.getElementById('modalDate').textContent = `📝 Entries from ${dateStr}`;
-      document.getElementById('modalJournalEntry').innerHTML = `<div class="p-2">Error loading entries: ${escapeHtml(String(errMsg))}</div>`;
-      document.getElementById('modalMoodLevel').textContent = '';
-      document.getElementById('modalEmotionsContainer').textContent = '';
-      document.getElementById('modalSummary').textContent = '';
-      new bootstrap.Modal(document.getElementById('journalModal')).show();
-    }
-  } catch (err) {
-    console.error('Network / parsing error when fetching journal entries:', err);
-    document.getElementById('modalDate').textContent = `📝 Entries`;
-    document.getElementById('modalJournalEntry').innerHTML = `<div class="p-2">Network error. Check console.</div>`;
-    document.getElementById('modalMoodLevel').textContent = '';
-    document.getElementById('modalEmotionsContainer').textContent = '';
-    document.getElementById('modalSummary').textContent = '';
-    new bootstrap.Modal(document.getElementById('journalModal')).show();
-  }
-}
-
-function populateJournalModal(dateStr, entries) {
-  const entriesContainer = document.getElementById('entriesContainer');
-  const modalDateTitle = document.getElementById('modalDateTitle');
-  
-  // Set the modal title with the date
-  modalDateTitle.textContent = `Journal Entries - ${formatDateDisplay(dateStr)}`;
-  
-  // Clear previous entries
-  entriesContainer.innerHTML = '';
-  
-  if (!Array.isArray(entries) || entries.length === 0) {
-    entriesContainer.innerHTML = '<div class="text-center py-4 text-muted">No entries found for this date.</div>';
-    safeShowModal(document.getElementById('journalModal'));
-    return;
-  }
-  
-  // Create HTML for each entry
-  entries.forEach((ent, idx) => {
-    const created_at = formatDateDisplay(ent.created_at || ent.entry_date || '');
-    const mood_score = (ent.mood_score !== undefined) ? ent.mood_score : (ent.mood !== undefined ? ent.mood : '');
-    const emotions = Array.isArray(ent.emotions) ? ent.emotions : (ent.emotions ? [ent.emotions] : []);
-    const journal_text = ent.entry || ent.journal || ent.journal_entry || '';
-    const ai_summary = ent.ai_response || ent.summary || ent.ai_summary || '';
-
-    const entryCard = document.createElement('div');
-    entryCard.className = 'entry-card';
-    
-    entryCard.innerHTML = `
-      <div class="entry-header">
-        <span class="entry-number">Entry #${idx + 1}</span>
-        <span class="entry-date">${created_at}</span>
-      </div>
-      
-      <div>
-        <span class="mood-score">Mood Level : ${mood_score}/10</span>
-      </div>
-      
-      ${emotions.length > 0 ? `
-        <div class="emotions-container">Emotions </div>
-          ${emotions.map(e => 
-            `<span class="emotion-pill">${escapeHtml(e)}</span>`
-          ).join('')}
-        </div>
-      ` : ''}
-      
-      ${journal_text ? `
-        <div class="section-label">Journal Entry</div>
-        <div class="journal-text">${escapeHtml(journal_text)}</div>
-      ` : ''}
-      
-      ${ai_summary ? `
-        <div class="section-label">AI Summary</div>
-        <div class="ai-summary">${escapeHtml(ai_summary)}</div>
-      ` : ''}
-    `;
-    
-    entriesContainer.appendChild(entryCard);
-  });
-  
-  // Show the modal
-  safeShowModal(document.getElementById('journalModal'));
-}
-
-
-
-
-/* -------------------------
-   Populate modal with a table showing all entries for the date
-   Fields: Entry Date (created_at), Mood Score (out of 10), Emotions, Journal Entry, AI Summary
-   ------------------------- */
-// function populateJournalModal(dateStr, entries) {
-//   // Ensure modalDate shows the date
-//   document.getElementById('modalDate').textContent = `📝 Entries from ${formatDateDisplay(dateStr)}`;
-
-//   // Clear top-level small fields (we'll show per-entry data)
-//   const moodPillEl = document.getElementById('modalMoodLevel');
-//   if (moodPillEl) moodPillEl.textContent = '';
-//   const emoTop = document.getElementById('modalEmotionsContainerContainer') || document.getElementById('modalEmotionsContainer');
-//   if (emoTop) emoTop.innerHTML = '';
-//   const summaryTop = document.getElementById('modalSummary');
-//   if (summaryTop) summaryTop.textContent = '';
-
-//   // Container where we'll put all entries (styled area)
-//   const container = document.getElementById('modalJournalEntry');
-//   if (!container) return;
-
-//   if (!Array.isArray(entries) || entries.length === 0) {
-//     container.innerHTML = `<div class="p-2">No entries found for this date.</div>`;
-//     new bootstrap.Modal(document.getElementById('journalModal')).show();
-//     return;
-//   }
-
-//   // Build HTML for each entry (numbered)
-//   let html = '';
-//   entries.forEach((ent, idx) => {
-//     const idxNum = idx + 1;
-//     const created_at = ent.created_at || ent.entry_date || '';
-//     // Determine mood_score (prefer mood_score, fallback to mood)
-//     let mood_score = '';
-//     if (ent.mood_score !== undefined && ent.mood_score !== null) {
-//       mood_score = ent.mood_score;
-//     } else if (ent.mood !== undefined && ent.mood !== null) {
-//       const m = Number(ent.mood);
-//       mood_score = (!isNaN(m) ? (m > 10 ? Math.round((m / 10) * 10) / 10 : m) : '');
-//     }
-
-//     // Emotions array
-//     let emotionsArr = [];
-//     if (Array.isArray(ent.emotions)) emotionsArr = ent.emotions;
-//     else if (typeof ent.emotions === 'string' && ent.emotions.trim() !== '') {
-//       emotionsArr = ent.emotions.split(',').map(s => s.trim()).filter(Boolean);
-//     }
-
-//     const journal_text = ent.entry || ent.journal || ent.journal_entry || '';
-//     const ai_summary = ent.ai_response || ent.summary || ent.ai_summary || '';
-
-//     // Build emotion pills HTML
-//     let emotionsHtml = '';
-//     emotionsArr.forEach(e => {
-//       emotionsHtml += `<span class="emotion-pill" style="margin-right:6px;margin-bottom:6px">${escapeHtml(e)}</span>`;
-//     });
-
-//     // Each entry block: number header + small meta row + entry box + ai summary box
-//     html += `
-//       <div style="margin-bottom:14px; padding:12px; border-radius:10px; background:#ffffff; border:1px solid #f0f2f5;">
-//         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-//           <div style="font-weight:700; font-size:14px;">${idxNum}.</div>
-//           <div style="font-size:13px; color:#666;">${escapeHtml(formatDateDisplay(created_at))}</div>
-//         </div>
-
-//         <div style="display:flex; gap:12px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
-//           <div style="font-weight:600; background:#eef3ff; padding:6px 10px; border-radius:999px;">
-//             ${mood_score !== '' ? escapeHtml(String(mood_score)) + '/10' : '—'}
-//           </div>
-//           <div>${emotionsHtml}</div>
-//         </div>
-
-//         <div class="entry-box" style="margin-bottom:10px;">
-//           ${escapeHtml(journal_text) || '<em>No journal text</em>'}
-//         </div>
-
-//         <div class="ai-box">
-//           ${escapeHtml(ai_summary) || '<em>No AI summary</em>'}
-//         </div>
-//       </div>
-//     `;
-//   });
-
-//   // Insert HTML into modalJournalEntry container
-//   container.innerHTML = html;
-
-//   // Show the modal
-//   safeShowModal(document.getElementById('journalModal'));
-// }
-
-
-/* small utility to avoid raw HTML injection */
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  let entriesData = []; // Store full entries data
+
+  // Set current date
+  function setCurrentDate() {
+    const now = new Date();
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    document.getElementById('current-date').textContent = '📅 ' + now.toLocaleDateString('en-US', options);
+  }
+
+  // Get mood emoji and score based on mood label
+  function getMoodDisplay(mood) {
+    if (!mood) return { emoji: '😐', score: '5/10' };
+    
+    const moodLower = mood.toLowerCase();
+    switch(moodLower) {
+      case 'blissful':
+        return { emoji: '😍', score: '9-10/10' };
+      case 'good':
+        return { emoji: '😊', score: '7-8/10' };
+      case 'neutral':
+        return { emoji: '😐', score: '5-6/10' };
+      case 'very low':
+        return { emoji: '😢', score: '1-4/10' };
+      default:
+        return { emoji: '😐', score: '5/10' };
+    }
+  }
+
+  // Get mood tag class
+  function getMoodTagClass(mood) {
+    if (!mood) return 'neutral';
+    
+    const moodLower = mood.toLowerCase().replace(' ', '-');
+    switch(moodLower) {
+      case 'blissful': return 'blissful';
+      case 'good': return 'good';
+      case 'neutral': return 'neutral';
+      case 'very-low': return 'very-low';
+      default: return 'neutral';
+    }
+  }
+
+  // Format database date to display format
+  function formatDateForDisplay(dateString) {
+    try {
+      // Handle different possible date formats from SQLite
+      let date;
+      if (dateString.includes('T')) {
+        // ISO format: 2025-08-07T21:04:30
+        date = new Date(dateString);
+      } else if (dateString.includes('-') && dateString.includes(':')) {
+        // SQLite format: 2025-08-07 21:04:30
+        date = new Date(dateString.replace(' ', 'T'));
+      } else {
+        date = new Date(dateString);
+      }
+
+      // Format: "August 7, 2025 at 09:04 PM"
+      const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+      const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+      
+      return date.toLocaleDateString('en-US', dateOptions) + ' at ' + 
+             date.toLocaleTimeString('en-US', timeOptions);
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return dateString; // Return original if formatting fails
+    }
+  }
+
+  // Truncate text for preview
+  function truncateText(text, maxLength = 150) {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  }
+
+  // Load history from API
+  async function loadHistory() {
+    try {
+      // Show loading state
+      showState('loading');
+
+      const response = await fetch('/api/history', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Please log in to view your history');
+        }
+        throw new Error(`Failed to load history (${response.status})`);
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.entries && data.entries.length > 0) {
+        entriesData = data.entries; // Store for modal use
+        displayEntries(data.entries);
+        document.getElementById('history-title').textContent = `📖 Journal History (${data.entries.length} entries)`;
+        showState('content');
+      } else {
+        showState('empty');
+      }
+
+    } catch (error) {
+      console.error('Error loading history:', error);
+      document.getElementById('error-message').textContent = error.message;
+      showState('error');
+    }
+  }
+
+  // Show different states
+  function showState(state) {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'none';
+    document.getElementById('content-container').style.display = 'none';
+
+    switch(state) {
+      case 'loading':
+        document.getElementById('loading-state').style.display = 'block';
+        break;
+      case 'empty':
+        document.getElementById('empty-state').style.display = 'block';
+        break;
+      case 'error':
+        document.getElementById('error-state').style.display = 'block';
+        break;
+      case 'content':
+        document.getElementById('content-container').style.display = 'block';
+        break;
+    }
+  }
+
+  // Display entries dynamically
+  function displayEntries(entries) {
+    const container = document.getElementById('history-entries');
+    let entriesHTML = '';
+
+    entries.forEach((entry) => {
+      const moodDisplay = getMoodDisplay(entry.mood);
+      const formattedDate = formatDateForDisplay(entry.created_at);
+      const truncatedEntry = truncateText(entry.entry, 120);
+      const moodTagClass = getMoodTagClass(entry.mood);
+
+      entriesHTML += `
+        <div class="entry-card">
+          <div class="entry-header">
+            <span>${formattedDate}</span>
+            <span class="entry-mood">${moodDisplay.emoji} Mood: ${moodDisplay.score}</span>
+            <div class="entry-actions">
+              <button title="View" onclick="viewEntry(${entry.id})">👁️</button>
+            </div>
+          </div>
+          <p>${truncatedEntry}</p>
+          <div>
+            <span class="tag ${moodTagClass}">${entry.mood || 'neutral'}</span>
+          </div>
+          <div class="ai-summary">
+            🤖 AI Summary <br>
+            ${truncateText(entry.ai_response, 200)}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = entriesHTML;
+  }
+
+  // View full entry in modal
+  function viewEntry(entryId) {
+    const entry = entriesData.find(e => e.id === entryId);
+    if (!entry) {
+      alert('Entry not found');
+      return;
+    }
+
+    // Populate modal with full entry data
+    const moodDisplay = getMoodDisplay(entry.mood);
+    const formattedDate = formatDateForDisplay(entry.created_at);
+    const moodTagClass = getMoodTagClass(entry.mood);
+
+    document.getElementById('modal-date').textContent = formattedDate;
+    document.getElementById('modal-mood').innerHTML = `
+      <span class="entry-mood">${moodDisplay.emoji} Mood: ${moodDisplay.score}</span>
+      <span class="tag ${moodTagClass} ms-2">${entry.mood || 'neutral'}</span>
+    `;
+    document.getElementById('modal-entry').textContent = entry.entry;
+    document.getElementById('modal-ai-response').innerHTML = `
+      🤖 AI Response <br>
+      ${entry.ai_response}
+    `;
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('viewEntryModal'));
+    modal.show();
+  }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', function() {
+    setCurrentDate();
+    loadHistory();
+  });
+</script>
+
 </body>
 </html>
-
-
-
-
