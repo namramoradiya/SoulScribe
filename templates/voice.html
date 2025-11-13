@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoulScribe - Voice Journal</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <style>
+    body {
+      background: #f7f9fe;
+      font-family: 'Inter', sans-serif;
+      color: #222;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-weight: 700;
+      font-size: 28px;
+      color: #2b2b2b;
+    }
+    .header p {
+      font-size: 15px;
+      color: #555;
+    }
+
+    .date {
+      text-align: left;
+      font-size: 14px;
+      color: #5a5a5a;
+      margin-bottom: 10px;
+    }
+
+    /* NAVBAR */
+    .nav-tabs {
+      border: none;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    .nav-tabs .nav-link {
+      border: none;
+      color: #444;
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+    }
+    .nav-tabs .nav-link.active {
+      background: #f0edff;
+      color: #6b4ce6;
+      font-weight: 600;
+    }
+
+    /* CARD */
+    .card {
+      border: none;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    /* VOICE SECTION BOX STYLE */
+    .voice-section {
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 12px;
+      background: #f8faff;
+      border: 1px solid #e3e7f0;
+    }
+
+    .mic-icon {
+      font-size: 48px;
+      color: #4a6cf7;
+      background: #eaf0ff;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+    }
+
+    .recording-icon {
+      background: #ffe5e5;
+      color: #d9534f;
+    }
+
+    .btn-record {
+      background-color: #4a6cf7;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 25px;
+      transition: 0.3s ease;
+    }
+
+    .btn-record:hover { background-color: #3b5ad8; }
+
+    .btn-stop {
+      background-color: #dc3545;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 25px;
+    }
+
+    .recording-text {
+      color: #d9534f;
+      font-weight: 600;
+      font-size: 17px;
+    }
+
+    .voice-output {
+      background: #fff;
+      border: 1px solid #e3e7f0;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .transcription {
+      color: #555;
+      font-size: 15px;
+      margin-top: 15px;
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .ai-response {
+      margin-top: 15px;
+      background: #eef0fb;
+      border-left: 4px solid #b3a4f4;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #444;
+      display: none;
+    }
+
+    .save-btn {
+      background-color: #b3a4f4;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .save-btn:hover { background-color: #9e8de8; }
+
+    .action-buttons { display: flex; gap: 10px; margin-top: 10px; }
+  </style>
+</head>
+
+<body>
+
+<div class="container py-4">
+
+  <!-- DATE -->
+  <div class="date" id="currentDate">📅 </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>🎙️ SoulScribe Voice Journal</h1>
+    <p>Express yourself through voice. Your words will be transcribed and analyzed empathetically.</p>
+  </div>
+
+  <!-- NAVBAR -->
+  <ul class="nav nav-tabs justify-content-center mb-4">
+    <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
+    <li class="nav-item"><a class="nav-link active" href="/voice">Voice</a></li>
+    <li class="nav-item"><a class="nav-link" href="/calender">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link" href="/insights">Insights</a></li>
+    <li class="nav-item"><a class="nav-link" href="/mindfulness">Mindfulness</a></li>
+    <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+  </ul>
+
+  <!-- MAIN CARD -->
+  <div class="card p-4">
+
+    <!-- INITIAL VIEW -->
+    <div id="voiceStart" class="voice-section">
+      <div class="mic-icon"><i class="bi bi-mic"></i></div>
+      <h4>Voice Journal</h4>
+      <p>Record your thoughts and let SoulScribe understand your emotions.</p>
+      <button class="btn btn-record mt-2" id="startBtn">🎙️ Start Recording</button>
+    </div>
+
+    <!-- RECORDING -->
+    <div id="voiceRecording" class="voice-section" style="display: none;">
+      <div class="mic-icon recording-icon"><i class="bi bi-mic-mute"></i></div>
+      <h4 class="recording-text">Recording...</h4>
+      <p>Speak freely about your thoughts and feelings. Tap stop when finished.</p>
+      <button class="btn btn-stop mt-2" id="stopBtn">⏹ Stop Recording</button>
+    </div>
+
+    <!-- RESULT -->
+    <div id="voiceResult" class="voice-section" style="display: none;">
+      <div class="voice-output">
+        <h6 class="fw-semibold">Your Recording</h6>
+
+        <div class="action-buttons">
+          <button id="playBtn" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-play-fill"></i> Play
+          </button>
+          <button id="deleteBtn" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash-fill"></i> Delete
+          </button>
+        </div>
+
+        <audio id="audioPlayer" class="mt-3 w-100" controls style="display:none;"></audio>
+
+        <div class="transcription mt-3">
+          <strong>Transcription:</strong><br>
+          <span id="transcribedText">Processing your voice...</span>
+        </div>
+
+        <div id="aiResponse" class="ai-response"></div>
+
+        <button class="save-btn" id="saveBtn">💾 Save Voice Entry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function getCurrentDate() {
+  const today = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  return today.toLocaleDateString('en-US', options);
+}
+document.getElementById("currentDate").textContent = "📅 " + getCurrentDate();
+
+/* ------- VOICE RECORDING LOGIC (UNCHANGED) ------- */
+let mediaRecorder, stream;
+let audioChunks = [];
+let audioBlob;
+
+document.getElementById("startBtn").addEventListener("click", async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(track => track.stop());
+      audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audioPlayer = document.getElementById("audioPlayer");
+      audioPlayer.src = audioUrl;
+      audioPlayer.style.display = "block";
+
+      document.getElementById("voiceRecording").style.display = "none";
+      document.getElementById("voiceResult").style.display = "block";
+
+      const formData = new FormData();
+      formData.append("audio", audioBlob, "recording.webm");
+      document.getElementById("transcribedText").textContent = "⏳ Transcribing your voice...";
+
+      const uploadRes = await fetch("/api/upload_audio", { method: "POST", body: formData });
+      const uploadData = await uploadRes.json();
+
+      if (uploadData.error) {
+        document.getElementById("transcribedText").textContent = "⚠️ Error during transcription.";
+        return;
+      }
+
+      const transcription = uploadData.transcription || "(No speech detected)";
+      document.getElementById("transcribedText").textContent = transcription;
+
+      const aiBox = document.getElementById("aiResponse");
+      aiBox.style.display = "block";
+      aiBox.textContent = "💭 SoulScribe is analyzing your emotions...";
+
+      const aiRes = await fetch("/api/voice_ai_response", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: transcription })
+      });
+
+      const aiData = await aiRes.json();
+      const aiResponse = aiData.ai_response || "✨ SoulScribe couldn’t generate a response.";
+      aiBox.textContent = `✨ SoulScribe: ${aiResponse}`;
+
+      const moodRes = await fetch("/api/analyze_mood", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entry: transcription })
+      });
+
+      const moodData = await moodRes.json();
+      const mood = moodData.mood_label || "Neutral";
+
+      document.getElementById("saveBtn").onclick = async () => {
+        const saveRes = await fetch("/api/save_voice_entry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            transcript: transcription,
+            ai_response: aiResponse,
+            mood: mood
+          })
+        });
+        const saveData = await saveRes.json();
+        if (saveData.ok) alert("✅ Voice journal entry saved successfully!");
+        else alert("⚠️ " + saveData.error);
+      };
+    };
+
+    mediaRecorder.start();
+    document.getElementById("voiceStart").style.display = "none";
+    document.getElementById("voiceRecording").style.display = "block";
+
+  } catch (err) {
+    alert("Microphone access denied or error starting recorder.");
+    console.error(err);
+  }
+});
+
+document.getElementById("stopBtn").addEventListener("click", () => {
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+  }
+});
+
+document.getElementById("playBtn").addEventListener("click", () => {
+  const player = document.getElementById("audioPlayer");
+  player.paused ? player.play() : player.pause();
+});
+
+document.getElementById("deleteBtn").addEventListener("click", () => {
+  if (confirm("Are you sure you want to delete this recording?")) {
+    audioBlob = null;
+    document.getElementById("voiceResult").style.display = "none";
+    document.getElementById("voiceStart").style.display = "block";
+  }
+});
+</script>
+
+</body>
+</html>
