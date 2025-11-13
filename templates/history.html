@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -149,7 +150,7 @@
 <div class="container py-4">
 
   <!-- Date -->
-   <div class="d-flex w-100 justify-content-between align-items-center mb-3">
+  <div class="d-flex w-100 justify-content-between align-items-center mb-3">
     
     <!-- Date -->
     <div class="date" style="font-size: 14px; color: #5a5a5a;">
@@ -173,9 +174,9 @@
   <!-- Navigation Tabs -->
   <ul class="nav nav-tabs justify-content-center mb-4">
     <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Voice</a></li>
+    <li class="nav-item"><a class="nav-link" href="/voice">Voice</a></li>
     <li class="nav-item"><a class="nav-link" href="/calender">Calendar</a></li>
-    <li class="nav-item"><a class="nav-link" href="#">Insights</a></li>
+    <li class="nav-item"><a class="nav-link" href="/insights">Insights</a></li>
     <li class="nav-item"><a class="nav-link" href="/mindfulness">Mindfulness</a></li>
     <li class="nav-item"><a class="nav-link active" href="/history">History</a></li>
   </ul>
@@ -261,13 +262,13 @@
     const moodLower = mood.toLowerCase();
     switch(moodLower) {
       case 'blissful':
-        return { emoji: '😍', score: '9-10/10' };
+        return { emoji: '😍', score: '10/10' };
       case 'good':
-        return { emoji: '😊', score: '7-8/10' };
+        return { emoji: '😊', score: '8/10' };
       case 'neutral':
-        return { emoji: '😐', score: '5-6/10' };
+        return { emoji: '😐', score: '6/10' };
       case 'very low':
-        return { emoji: '😢', score: '1-4/10' };
+        return { emoji: '😢', score: '4/10' };
       default:
         return { emoji: '😐', score: '5/10' };
     }

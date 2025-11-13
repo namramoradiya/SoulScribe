@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoulScribe - Insights</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: #f7f9fe;
+      font-family: 'Inter', sans-serif;
+      color: #222;
+    }
+
+    .date {
+      font-size: 14px;
+      color: #5a5a5a;
+      margin-bottom: 10px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      font-weight: 700;
+      font-size: 28px;
+      color: #2b2b2b;
+    }
+    .header p {
+      font-size: 15px;
+      color: #555;
+    }
+
+    /* Navbar Tabs */
+    .nav-tabs {
+      border: none;
+      justify-content: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+    .nav-tabs .nav-link {
+      border: none;
+      color: #444;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-tabs .nav-link.active {
+      background: #f0edff;
+      color: #6b4ce6;
+      font-weight: 600;
+    }
+
+    /* Cards for metrics */
+    .metric-card {
+      border-radius: 14px;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      text-align: left;
+    }
+    .metric-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    .metric-value {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .metric-sub {
+      font-size: 13px;
+      color: #777;
+    }
+
+    /* Chart container */
+    .chart-card {
+      border-radius: 14px;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      height: 100%;
+    }
+    .chart-card h5 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .custom-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 30px; /* spacing between tabs */
+      padding: 14px 20px;
+      background: #f4f6ff;
+      border-radius: 12px;
+    }
+
+    /* Tab Button */
+    .custom-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #4a4a4a;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .custom-tab.active {
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .custom-tab:hover {
+      background: #eef1ff;
+    }
+
+      .charts-row {
+    margin-top: 20px;
+  }
+
+  .chart-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chart-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .chart-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #moodJourneyChart, #sentimentChart {
+    max-height: 300px;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .chart-card {
+      height: auto;
+    }
+  }
+
+  </style>
+</head>
+<body>
+<div class="container py-4">
+
+  <!-- Date -->
+  <div class="d-flex w-100 justify-content-between align-items-center mb-3">
+    
+    <!-- Date -->
+    <div class="date" style="font-size: 14px; color: #5a5a5a;">
+        📅 Thursday, November 13, 2025
+    </div>
+
+    <!-- Logout -->
+    <a href="/logout" 
+       class="text-decoration-none"
+       style="font-size: 14px; color: #6b4ce6; font-weight: 600;">
+        Logout
+    </a>
+</div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🧠 SoulScribe</h1>
+    <p>Your personal AI-powered mental health companion. Express your thoughts, 
+       understand your emotions, and track your journey to well-being.</p>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item"><a class="nav-link" href="/index">Journal</a></li>
+    <li class="nav-item"><a class="nav-link" href="/voice">Voice</a></li>
+    <li class="nav-item"><a class="nav-link" href="/calender">Calendar</a></li>
+    <li class="nav-item"><a class="nav-link active" href="/insights">Insights</a></li>
+    <li class="nav-item"><a class="nav-link" href="/mindfulness">Mindfulness</a></li>
+    <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+  </ul>
+
+  <!-- Metric Cards -->
+<div class="row g-3">
+    <div class="col-md-3">
+      <div class="metric-card bg-blue">
+        <div class="metric-title">
+          Mood Progress
+          <span>📈</span>
+        </div>
+        <div class="metric-value text-primary">+5.0</div>
+        <div class="metric-sub">vs previous week</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card bg-green">
+        <div class="metric-title">
+          Consistency
+          <span>🎯</span>
+        </div>
+        <div class="metric-value text-success">0%</div>
+        <div class="metric-sub">mood stability</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card bg-purple">
+        <div class="metric-title">
+          Best Streak
+          <span>🏅</span>
+        </div>
+        <div class="metric-value" style="color:#a855f7;">0</div>
+        <div class="metric-sub">consecutive good days</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card bg-orange">
+        <div class="metric-title">
+          Expression
+          <span>⚡</span>
+        </div>
+        <div class="metric-value text-warning">34</div>
+        <div class="metric-sub">avg words per entry</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trends Tabs -->
+  <!-- <div class="custom-tabs">
+    <a href="#" class="custom-tab active">📈 Trends</a>
+    <a href="#" class="custom-tab">🤍 Emotions</a>
+    <a href="#" class="custom-tab">⏱ Patterns</a>
+    <a href="#" class="custom-tab">📉 Wellness</a>
+    <a href="#" class="custom-tab">🧠 Deep Insights</a>
+  </div> -->
+
+  <!-- Charts Section -->
+  <!-- <div class="row g-3">
+    <div class="col-md-6">
+      <div class="chart-card">
+        <h5>📈 Mood Journey (14 Days)</h5>
+        <img src="https://via.placeholder.com/400x250?text=Mood+Journey+Chart" class="img-fluid" alt="Mood Journey">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="chart-card">
+        <h5>📊 Sentiment Distribution</h5>
+        <img src="https://via.placeholder.com/400x250?text=Sentiment+Chart" class="img-fluid" alt="Sentiment Distribution">
+      </div>
+    </div>
+  </div> -->
+<div class="row g-3 charts-row">
+  <!-- Mood Journey Chart -->
+  <div class="col-md-6">
+    <div class="chart-card">
+      <h6 class="chart-title">📈 Mood Journey (14 Days)</h6>
+      <canvas id="moodJourneyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Sentiment Distribution Chart -->
+  <div class="col-md-6">
+    <div class="chart-card">
+      <h6 class="chart-title">📊 Sentiment Distribution</h6>
+      <div class="chart-container">
+        <canvas id="sentimentChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Chart.js
+async function loadCharts() {
+  try {
+    // Step 1️⃣ - Fetch logged-in user info
+    const userRes = await fetch('/api/me');
+    const userInfo = await userRes.json();
+
+    if (!userInfo.success || !userInfo.user?.user_id) {
+      console.error("User not authenticated or missing user_id.");
+      document.getElementById('moodJourneyChart').parentElement.innerHTML =
+        "<p class='text-muted text-center mt-4'>Please log in to view insights.</p>";
+      return;
+    }
+
+    const userId = userInfo.user.user_id; // dynamically fetched from session
+    console.log("Loaded user_id:", userId);
+
+    // Step 2️⃣ - Fetch mood journey data for that user
+    const moodRes = await fetch('/api/mood-journey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const moodData = await moodRes.json();
+
+    if (moodData.success && moodData.data.length > 0) {
+      const labels = moodData.data.map(item => item.date);
+      const scores = moodData.data.map(item => item.mood_score);
+
+      // Keep Y-axis strictly 1–10 range
+      const minScore = 1;
+      const maxScore = 10;
+
+      new Chart(document.getElementById('moodJourneyChart'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Mood Score',
+            data: scores,
+            borderColor: '#36A2EB',
+            backgroundColor: 'rgba(54,162,235,0.2)',
+            fill: true,
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: '#1976d2',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => `Mood: ${ctx.raw.toFixed(1)}`
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: minScore,
+              max: maxScore,
+              title: { display: true, text: 'Mood Level' },
+              ticks: { stepSize: 1 }
+            },
+            x: {
+              ticks: { autoSkip: true, maxTicksLimit: 7 },
+              title: { display: true, text: 'Date' }
+            }
+          }
+        }
+      });
+    } else {
+      document.getElementById('moodJourneyChart').parentElement.innerHTML =
+        "<p class='text-muted text-center mt-4'>No mood data available yet.</p>";
+    }
+
+    // Step 3️⃣ - Fetch sentiment distribution data for that user
+    const sentimentRes = await fetch('/api/sentiment-distribution', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId })
+    });
+    const sentimentData = await sentimentRes.json();
+
+    if (sentimentData.success) {
+      const sData = sentimentData.data;
+
+      const dataValues = [
+        sData.positive || 0.01,
+        sData.neutral || 0.01,
+        sData.negative || 0.01
+      ];
+
+      new Chart(document.getElementById('sentimentChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Positive', 'Neutral', 'Negative'],
+          datasets: [{
+            data: dataValues,
+            backgroundColor: ['#4CAF50', '#FFC107', '#F44336'],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          maintainAspectRatio: false,
+          cutout: '65%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 15, font: { size: 12 } }
+            }
+          }
+        }
+      });
+    }
+
+  } catch (err) {
+    console.error("Error loading charts:", err);
+  }
+}
+
+// Load charts when page loads
+loadCharts();
+
+</script>
+
+</div>
+</body>
+</html>

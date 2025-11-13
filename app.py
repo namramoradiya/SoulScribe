@@ -32,6 +32,10 @@ def journal():
     return render_template("landing.html")
 
 
+@app.route("/insights")
+def insights():
+    return render_template("insights.html")
+
 from werkzeug.security import generate_password_hash
 
 @app.route("/register", methods=["GET", "POST"])
